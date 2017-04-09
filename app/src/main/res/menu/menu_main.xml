@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.FirstActivity">
+
+    <item android:id="@+id/action_pref"
+        android:title="menu"
+        android:icon="@drawable/menu24white"
+        android:orderInCategory="200"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_carte"
+        android:title="carte"
+        android:icon="@drawable/carte24white"
+        android:orderInCategory="300"
+        app:showAsAction="ifRoom" />
+</menu>
