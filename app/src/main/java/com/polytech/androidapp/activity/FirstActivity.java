@@ -289,12 +289,12 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    private class PlaceAdapter extends ArrayAdapter {
+    public class PlaceAdapter extends ArrayAdapter {
 
         private List<Place> list_places;
         private int resource;
         private LayoutInflater inflater;
-        private PlaceAdapter(Context context, int resource, List<Place> objects) {
+        public PlaceAdapter(Context context, int resource, List<Place> objects) {
             super(context, resource, objects);
             list_places = objects;
             this.resource = resource;
@@ -306,37 +306,21 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder = new ViewHolder();
-
-            if(convertView == null){
+            
                 convertView = inflater.inflate(resource, null);
-                holder.image = (ImageView)convertView.findViewById(R.id.imagePlace);
                 holder.name = (TextView)convertView.findViewById(R.id.name);
+                holder.image = (ImageView)convertView.findViewById(R.id.imagePlace) ;
                 holder.dist = (TextView)convertView.findViewById(R.id.dist);
                 holder.open = (TextView)convertView.findViewById(R.id.open);
                 holder.rate = (RatingBar)convertView.findViewById(R.id.rate);
                 holder.num = (Button)convertView.findViewById(R.id.buttonNum);
                 holder.www = (Button)convertView.findViewById(R.id.buttonWeb);
                 convertView.setTag(holder);
-            }
+
 
             // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
             String placeId=list_places.get(position).getPlace_id();
-            /*PlacePhotoMetadataResult result = Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId).await();
-            // Get a PhotoMetadataBuffer instance containing a list of photos (PhotoMetadata).
-            if (result != null && result.getStatus().isSuccess()) {
-                PlacePhotoMetadataBuffer photoMetadataBuffer = result.getPhotoMetadata();
-                // Get the first photo in the list.
-                PlacePhotoMetadata photo = photoMetadataBuffer.get(0);
-                // Get a full-size bitmap for the photo.
-                Bitmap image = photo.getPhoto(mGoogleApiClient).await().getBitmap();
-                // Get the attribution text.
-                CharSequence attribution = photo.getAttributions();
-                photoMetadataBuffer.release();
-                holder.image.setImageBitmap(image);
-
-            }*/
-            final ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
-                    = new ResultCallback<PlacePhotoResult>() {
+            final ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback = new ResultCallback<PlacePhotoResult>() {
                 @Override
                 public void onResult(PlacePhotoResult placePhotoResult) {
                     if (!placePhotoResult.getStatus().isSuccess()) {
@@ -371,11 +355,14 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             //distance
             float res[] =  new float[1];
             Location.distanceBetween(list_places.get(position).getLatitude(), list_places.get(position).getLongitude(), latitude, longitude, res);
+            Log.e("distance: ", String.valueOf(res[0]));
             float dist = res[0];
-            if (res != null)
+            int dist_int = (int)dist/10000;
+            dist = ((float)dist_int)/100;
+            /*if (res != null)
             {
-                holder.dist.setText(String.valueOf((int) dist/10000)+" km");
-            }
+                holder.dist.setText(String.valueOf(dist)+" km");
+            }*/
             holder.name.setText(list_places.get(position).getName());
             holder.rate.setRating(list_places.get(position).getRating());
             holder.num.setText(list_places.get(position).getPhoneNumber());
@@ -405,8 +392,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             private TextView dist;
             private TextView open;
             private RatingBar rate;
-            private ImageView image;
             private Button num;
+            private ImageView image;
             private Button www;
         }
 

@@ -126,16 +126,20 @@ public class Place implements Parcelable{
 
     public int isOpen(int dayOfWeek, int hour, int min){
         if (!horaires_hebdo.getHoraires_jour().isEmpty()){
-            String fermeture = horaires_hebdo.getHoraires_jour().get(dayOfWeek).getFermeture();
-            int heure_ferm = Integer.parseInt(fermeture.substring(0, 1));
-            int minute_ferm = Integer.parseInt(fermeture.substring(2, 3));
-            String ouverture = horaires_hebdo.getHoraires_jour().get(dayOfWeek).getOuverture();
-            int heure_ouv = Integer.parseInt(ouverture.substring(0,1));
-            int minute_ouv = Integer.parseInt(ouverture.substring(2,3));
-            if((hour >= heure_ouv && min >= minute_ouv) || (hour <= heure_ferm && min <= minute_ferm))
-                return 1;
+            if (horaires_hebdo.getHoraires_jour().size() >= dayOfWeek) {
+                String fermeture = horaires_hebdo.getHoraires_jour().get(dayOfWeek).getFermeture();
+                int heure_ferm = Integer.parseInt(fermeture.substring(0, 1));
+                int minute_ferm = Integer.parseInt(fermeture.substring(2, 3));
+                String ouverture = horaires_hebdo.getHoraires_jour().get(dayOfWeek).getOuverture();
+                int heure_ouv = Integer.parseInt(ouverture.substring(0, 1));
+                int minute_ouv = Integer.parseInt(ouverture.substring(2, 3));
+                if ((hour >= heure_ouv && min >= minute_ouv) || (hour <= heure_ferm && min <= minute_ferm))
+                    return 1;
+                else
+                    return 0;
+            }
             else
-                return 0;
+                return -1;
         }
         else
         {
