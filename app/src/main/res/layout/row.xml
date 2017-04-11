@@ -12,12 +12,15 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp">
 
+
         <ImageView
             android:id="@+id/imagePlace"
             android:layout_width="match_parent"
             android:layout_height="290dp"
             android:contentDescription="hello"
-            app:srcCompat="@drawable/redlion" />
+            android:background="@drawable/redlion"
+            android:scaleType="fitXY"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"

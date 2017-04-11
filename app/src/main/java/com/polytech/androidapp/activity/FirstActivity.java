@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -358,9 +359,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
                     PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
                     if (photoMetadataBuffer.getCount() > 0) {
-                        // Display the first bitmap in an ImageView in the size of the view
                         photoMetadataBuffer.get(0)
-                                .getScaledPhoto(mGoogleApiClient, holder.image.getWidth(),
+                                .getScaledPhoto(mGoogleApiClient,
+                                        holder.image.getWidth(),
                                         holder.image.getHeight())
                                 .setResultCallback(mDisplayPhotoResultCallback);
                     }
@@ -371,7 +372,10 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             float res[] =  new float[1];
             Location.distanceBetween(list_places.get(position).getLatitude(), list_places.get(position).getLongitude(), latitude, longitude, res);
             float dist = res[0];
-            holder.dist.setText(String.valueOf(dist)+" km");
+            if (res != null)
+            {
+                holder.dist.setText(String.valueOf((int) dist/10000)+" km");
+            }
             holder.name.setText(list_places.get(position).getName());
             holder.rate.setRating(list_places.get(position).getRating());
             holder.num.setText(list_places.get(position).getPhoneNumber());
