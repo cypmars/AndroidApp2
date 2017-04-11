@@ -125,7 +125,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 8);
             }
         }
-        bestProvider = LocationManager.GPS_PROVIDER;
+        /*bestProvider = LocationManager.GPS_PROVIDER;
         Log.e("provider: ", bestProvider);
         Location location = locationManager.getLastKnownLocation(bestProvider);
         try {
@@ -137,6 +137,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         }
         Log.e("latitude", String.valueOf(latitude));
+        */
         latitude = 43.2410117;
         longitude = 5.3966877000000295;
 
