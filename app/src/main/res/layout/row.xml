@@ -35,7 +35,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/Horloge24white"/>
+                    app:srcCompat="@drawable/horloge24white"/>
 
                 <TextView
                     android:id="@+id/open"

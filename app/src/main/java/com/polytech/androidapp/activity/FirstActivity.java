@@ -3,15 +3,21 @@ package com.polytech.androidapp.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +30,13 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.Places;
 import com.polytech.androidapp.R;
 import com.polytech.androidapp.model.HorairesHebdo;
 import com.polytech.androidapp.model.HorairesJour;
@@ -33,6 +46,7 @@ import com.polytech.androidapp.model.Place;
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,24 +57,39 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class FirstActivity extends AppCompatActivity {
 
-    private ListView maListView;
+public class FirstActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    GoogleApiClient mGoogleApiClient;
+    int MY_PERMISSIONS_REQUEST_READ_CONTACTS;
+
+    ListViewCompat maListView;
     double longitude;
     double latitude;
     private ArrayList<Place> places = new ArrayList<Place>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
 
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addApi(LocationServices.API)
+                .enableAutoManage(this, this)
+                .build();
+
+        Log.e("Client Google: ", mGoogleApiClient.toString());
         setTitle(null);
 
-        Toolbar topToolBar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);
         topToolBar.setLogo(R.drawable.logo_nearby_2);
-
-        maListView = (ListView) findViewById(R.id.list);
+        Log.e("ListView: ", "Je suis la ");
+        maListView = (ListViewCompat) findViewById(R.id.list);
         maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -78,23 +107,37 @@ public class FirstActivity extends AppCompatActivity {
                 */
             }
         });
+        Log.e("ListView: ", "Je suis la ");
         //Localisation Android
-        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            try{
-                longitude = location.getLongitude();
-                latitude = location.getLatitude();
-            }
-            catch (NullPointerException e){
-                e.printStackTrace();
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        String bestProvider ="";
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
+            } else {
+                // do request the permission
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 8);
             }
         }
+        bestProvider = LocationManager.GPS_PROVIDER;
+        Log.e("provider: ", bestProvider);
+        Location location = locationManager.getLastKnownLocation(bestProvider);
+        try {
+            latitude = location.getLatitude ();
+            longitude = location.getLongitude ();
+        }
+        catch (NullPointerException e){
+            e.printStackTrace();
+
+        }
+        Log.e("latitude", String.valueOf(latitude));
+
+
 
         // On récupère le json de la requête
-        String url_request = "localhost:8080/greeting?latitude=" + latitude + "&longitude=" + longitude;
-
+        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude;
+        Log.e("url: ",url_request);
         new JSONTask().execute(url_request);
     }
 
@@ -118,6 +161,11 @@ public class FirstActivity extends AppCompatActivity {
         if(id == R.id.action_carte){
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     private class JSONTask extends AsyncTask<String,Integer, String > {
@@ -219,6 +267,7 @@ public class FirstActivity extends AppCompatActivity {
                         }*/
                     }
                     temp.add(place);
+                    Log.e("place: ", place.toString());
                 }
                 places =temp;
 
@@ -263,6 +312,28 @@ public class FirstActivity extends AppCompatActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
+            String placeId=list_places.get(position).getPlace_id();
+            PlacePhotoMetadataResult result = Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId).await();
+            // Get a PhotoMetadataBuffer instance containing a list of photos (PhotoMetadata).
+            if (result != null && result.getStatus().isSuccess()) {
+                PlacePhotoMetadataBuffer photoMetadataBuffer = result.getPhotoMetadata();
+                // Get the first photo in the list.
+                PlacePhotoMetadata photo = photoMetadataBuffer.get(0);
+                // Get a full-size bitmap for the photo.
+                Bitmap image = photo.getPhoto(mGoogleApiClient).await().getBitmap();
+                // Get the attribution text.
+                CharSequence attribution = photo.getAttributions();
+                photoMetadataBuffer.release();
+                holder.image.setImageBitmap(image);
+
+            }
+
+            //distance
+            float res[] =  new float[1];
+            Location.distanceBetween(list_places.get(position).getLatitude(), list_places.get(position).getLongitude(), latitude, longitude, res);
+            float dist = res[0];
+            holder.dist.setText(String.valueOf(dist)+" km");
             holder.name.setText(list_places.get(position).getName());
             holder.rate.setRating(list_places.get(position).getRating()/2);
 

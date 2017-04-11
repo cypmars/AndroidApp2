@@ -10,11 +10,29 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/gradient_nearby"
+        android:background="@color/colorNearbyDark"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-    <ListView android:id="@+id/list"
+    <android.support.v7.widget.SearchView
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_below="@+id/toolbar"
+        android:background="@color/common_google_signin_btn_text_light_focused"
+        android:orientation="horizontal">
+
+
+    <EditText
+        android:id="@+id/search_edit_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:text="search" />
+
+    </android.support.v7.widget.SearchView>
+    <android.support.v7.widget.ListViewCompat
+        android:id="@+id/list"
+        android:layout_below="@+id/search_bar"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 </RelativeLayout>
