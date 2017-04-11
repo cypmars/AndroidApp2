@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="290dp"
             android:contentDescription="hello"
-            android:background="@drawable/redlion"
+            android:background="@drawable/default_image"
             android:scaleType="fitXY"
             />
 

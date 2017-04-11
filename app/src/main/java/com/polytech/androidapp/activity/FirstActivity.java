@@ -137,12 +137,11 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         }
         Log.e("latitude", String.valueOf(latitude));
-
-
+        latitude = 43.2410117;
+        longitude = 5.3966877000000295;
 
         // On récupère le json de la requête
-        //String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude;
-        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=43.2410117&longitude=5.3966877000000295";
+        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude;
         Log.e("url: ",url_request);
         new JSONTask().execute(url_request);
     }
@@ -306,7 +305,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder = new ViewHolder();
-            
+
                 convertView = inflater.inflate(resource, null);
                 holder.name = (TextView)convertView.findViewById(R.id.name);
                 holder.image = (ImageView)convertView.findViewById(R.id.imagePlace) ;
@@ -356,13 +355,12 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             float res[] =  new float[1];
             Location.distanceBetween(list_places.get(position).getLatitude(), list_places.get(position).getLongitude(), latitude, longitude, res);
             Log.e("distance: ", String.valueOf(res[0]));
-            float dist = res[0];
-            int dist_int = (int)dist/10000;
-            dist = ((float)dist_int)/100;
-            /*if (res != null)
+            float dist = ((int) res[0])/1000.0f;
+
+            if (res != null)
             {
                 holder.dist.setText(String.valueOf(dist)+" km");
-            }*/
+            }
             holder.name.setText(list_places.get(position).getName());
             holder.rate.setRating(list_places.get(position).getRating());
             holder.num.setText(list_places.get(position).getPhoneNumber());
