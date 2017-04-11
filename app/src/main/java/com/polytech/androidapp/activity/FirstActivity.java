@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -32,10 +33,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.polytech.androidapp.R;
 import com.polytech.androidapp.model.HorairesHebdo;
@@ -63,6 +66,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
     GoogleApiClient mGoogleApiClient;
     int MY_PERMISSIONS_REQUEST_READ_CONTACTS;
 
+    PlaceAdapter.ViewHolder finalHolder;
     ListViewCompat maListView;
     double longitude;
     double latitude;
@@ -136,7 +140,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
 
         // On récupère le json de la requête
-        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude;
+        //String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude;
+        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=43.2410117&longitude=5.3966877000000295";
         Log.e("url: ",url_request);
         new JSONTask().execute(url_request);
     }
@@ -236,18 +241,20 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                         }
 
                         HorairesHebdo horairesHebdo = new HorairesHebdo();
-                        JSONArray arrayHoraires = jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").getJSONArray("horaires_jour");
-                        ArrayList<HorairesJour> arrayJour = new ArrayList<>();
-                        for (int k = 0; k < arrayHoraires.length(); k++)
-                        {
-                            HorairesJour horairesJour= new HorairesJour();
-                            horairesJour.setOuverture(arrayHoraires.getJSONObject(k).optString("ouverture"));
-                            horairesJour.setFermeture(arrayHoraires.getJSONObject(k).optString("fermeture"));
-                            arrayJour.add(horairesJour);
+                        if (jsonArray.getJSONObject(i).has("horaires_hebdo") && !jsonArray.getJSONObject(i).isNull("horaires_hebdo")){
+                            JSONArray arrayHoraires = jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").getJSONArray("horaires_jour");
+                            ArrayList<HorairesJour> arrayJour = new ArrayList<>();
+                            for (int k = 0; k < arrayHoraires.length(); k++)
+                            {
+                                HorairesJour horairesJour= new HorairesJour();
+                                horairesJour.setOuverture(arrayHoraires.getJSONObject(k).optString("ouverture"));
+                                horairesJour.setFermeture(arrayHoraires.getJSONObject(k).optString("fermeture"));
+                                arrayJour.add(horairesJour);
+                            }
+                            horairesHebdo.setHoraires_jour(arrayJour);
+                            horairesHebdo.setHorairesHebdo(jsonArray.getJSONObject(i).optString("horairesHebdo"));
+                            place.setHoraires_hebdo(horairesHebdo);
                         }
-                        horairesHebdo.setHoraires_jour(arrayJour);
-                        horairesHebdo.setHorairesHebdo(jsonArray.getJSONObject(i).optString("horairesHebdo"));
-                        place.setHoraires_hebdo(horairesHebdo);
 
                         Photo photo = new Photo();
                         photo.setHeight(jsonArray.getJSONObject(i).optInt("height"));
@@ -297,24 +304,23 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         @Override
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
-            ViewHolder holder = null;
+            final ViewHolder holder = new ViewHolder();
 
             if(convertView == null){
-                holder = new ViewHolder();
                 convertView = inflater.inflate(resource, null);
                 holder.image = (ImageView)convertView.findViewById(R.id.imagePlace);
                 holder.name = (TextView)convertView.findViewById(R.id.name);
                 holder.dist = (TextView)convertView.findViewById(R.id.dist);
                 holder.open = (TextView)convertView.findViewById(R.id.open);
                 holder.rate = (RatingBar)convertView.findViewById(R.id.rate);
+                holder.num = (Button)convertView.findViewById(R.id.buttonNum);
+                holder.www = (Button)convertView.findViewById(R.id.buttonWeb);
                 convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
             }
 
             // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
             String placeId=list_places.get(position).getPlace_id();
-            PlacePhotoMetadataResult result = Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId).await();
+            /*PlacePhotoMetadataResult result = Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId).await();
             // Get a PhotoMetadataBuffer instance containing a list of photos (PhotoMetadata).
             if (result != null && result.getStatus().isSuccess()) {
                 PlacePhotoMetadataBuffer photoMetadataBuffer = result.getPhotoMetadata();
@@ -327,28 +333,64 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 photoMetadataBuffer.release();
                 holder.image.setImageBitmap(image);
 
-            }
+            }*/
+            final ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback
+                    = new ResultCallback<PlacePhotoResult>() {
+                @Override
+                public void onResult(PlacePhotoResult placePhotoResult) {
+                    if (!placePhotoResult.getStatus().isSuccess()) {
+                        return;
+                    }
+                    holder.image.setImageBitmap(placePhotoResult.getBitmap());
+                }
+            };
 
+/**
+ * Load a bitmap from the photos API asynchronously
+ * by using buffers and result callbacks.
+ */
+            Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+                @Override
+                public void onResult(PlacePhotoMetadataResult photos) {
+                    if (!photos.getStatus().isSuccess()) {
+                        return;
+                    }
+
+                    PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                    if (photoMetadataBuffer.getCount() > 0) {
+                        // Display the first bitmap in an ImageView in the size of the view
+                        photoMetadataBuffer.get(0)
+                                .getScaledPhoto(mGoogleApiClient, holder.image.getWidth(),
+                                        holder.image.getHeight())
+                                .setResultCallback(mDisplayPhotoResultCallback);
+                    }
+                    photoMetadataBuffer.release();
+                }
+            });
             //distance
             float res[] =  new float[1];
             Location.distanceBetween(list_places.get(position).getLatitude(), list_places.get(position).getLongitude(), latitude, longitude, res);
             float dist = res[0];
             holder.dist.setText(String.valueOf(dist)+" km");
             holder.name.setText(list_places.get(position).getName());
-            holder.rate.setRating(list_places.get(position).getRating()/2);
+            holder.rate.setRating(list_places.get(position).getRating());
+            holder.num.setText(list_places.get(position).getPhoneNumber());
 
             Calendar calendar = Calendar.getInstance();
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
-            if (list_places.get(position).isOpen(dayOfWeek, hour, minute) == 1){
-                holder.open.setTextColor(Color.GREEN);
-                holder.open.setText("Ouvert");
+            if (list_places.get(position).getHoraires_hebdo() != null)
+            {
+                if (list_places.get(position).isOpen(dayOfWeek, hour, minute) == 1){
+                    holder.open.setTextColor(Color.GREEN);
+                    holder.open.setText("Ouvert");
+                }
+                else if(list_places.get(position).isOpen(dayOfWeek, hour, minute) == 0)
+                    holder.open.setText("Fermé");
+                else
+                    holder.open.setText("N/D");
             }
-            else if(list_places.get(position).isOpen(dayOfWeek, hour, minute) == 0)
-                holder.open.setText("Fermé");
-            else
-                holder.open.setText("N/D");
 
             return convertView;
         }
@@ -360,6 +402,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             private TextView open;
             private RatingBar rate;
             private ImageView image;
+            private Button num;
+            private Button www;
         }
 
     }

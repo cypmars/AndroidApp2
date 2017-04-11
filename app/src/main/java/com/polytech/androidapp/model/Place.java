@@ -172,4 +172,21 @@ public class Place implements Parcelable{
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
     }
+
+    @Override
+    public String toString() {
+        return "Place{" +
+                "place_id='" + place_id + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", types=" + types +
+                ", rating=" + rating +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", website='" + website + '\'' +
+                ", horaires_hebdo=" + horaires_hebdo +
+                ", photoRef=" + photoRef +
+                '}';
+    }
 }
