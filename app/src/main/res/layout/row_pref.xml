@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start|top">
 
-</LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:id="@+id/imagePlace"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/default_image"
+            android:contentDescription="hello"
+            android:scaleType="fitXY" />
+
+        <ImageView
+            android:id="@+id/filter"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@drawable/gradient_filter"
+            android:contentDescription="filter"
+            android:scaleType="fitXY" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/linearTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/linearTop"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/name"
+                    style="@style/Base.DialogWindowTitle.AppCompat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_weight="1"
+                    android:text="Name"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="40sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </FrameLayout>
+</ScrollView>
