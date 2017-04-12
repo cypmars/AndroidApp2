@@ -2,22 +2,18 @@ package com.polytech.androidapp.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,7 +24,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -36,12 +31,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.polytech.androidapp.R;
+import com.polytech.androidapp.model.Comment;
 import com.polytech.androidapp.model.HorairesHebdo;
 import com.polytech.androidapp.model.HorairesJour;
 import com.polytech.androidapp.model.Photo;
@@ -50,12 +45,10 @@ import com.polytech.androidapp.model.Place;
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -103,13 +96,36 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
             private void onItemClick(AdapterView<?> adapter, View v, int position) {
 
-                /*Integer id_place = ((Place) (adapter.getItemAtPosition(position))).getId_place();
-                Log.e("id_place: ", String.valueOf(id_place));
+                String place_id = ((Place) (adapter.getItemAtPosition(position))).getPlace_id();
+                String name = ((Place) (adapter.getItemAtPosition(position))).getName();
+                String address = ((Place) (adapter.getItemAtPosition(position))).getAddress();
+                double latitude = ((Place) (adapter.getItemAtPosition(position))).getLatitude();
+                double longitude = ((Place) (adapter.getItemAtPosition(position))).getLongitude();
+                ArrayList<String> types= ((Place) (adapter.getItemAtPosition(position))).getTypes();
+                int rating = ((Place) (adapter.getItemAtPosition(position))).getRating();
+                String phoneNumber= ((Place) (adapter.getItemAtPosition(position))).getPhoneNumber();
+                String website= ((Place) (adapter.getItemAtPosition(position))).getWebsite();
+                HorairesHebdo horaires_hebdo = ((Place) (adapter.getItemAtPosition(position))).getHoraires_hebdo();
+                Photo photoRef =((Place) (adapter.getItemAtPosition(position))).getPhotoRef();
+                ArrayList<Comment> commentArrayList = ((Place) (adapter.getItemAtPosition(position))).getComment();
+
+                Log.e("id_place: ", place_id);
                 Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
-                intent.putExtra(ID_PLACE, id_place.toString());
+                intent.putExtra("place_id", place_id);
+                intent.putExtra("name", name);
+                intent.putExtra("address", address);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("types", types);
+                intent.putExtra("rating", rating);
+                intent.putExtra("phoneNumber", phoneNumber);
+                intent.putExtra("website", website);
+                intent.putExtra("horaire_hebdo", horaires_hebdo);
+                intent.putExtra("photoRef", photoRef);
+                intent.putExtra("comments", commentArrayList);
+
                 //based on item add info to intent
                 startActivity(intent);
-                */
             }
         });
         Log.e("ListView: ", "Je suis la ");
@@ -142,7 +158,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         longitude = 5.3966877000000295;
 
         // On récupère le json de la requête
-        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude;
+        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
         Log.e("url: ",url_request);
         new JSONTask().execute(url_request);
     }
@@ -163,6 +179,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_pref){
+            Intent preference = new Intent(FirstActivity.this, PreferenceActivity.class);
+
         }
         if(id == R.id.action_carte){
         }
@@ -284,7 +302,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 e.printStackTrace();
             }
 
-            PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row, places);
+            PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row_place, places);
             maListView.setAdapter(adapter);
         }
     }
@@ -380,6 +398,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     holder.open.setText("Fermé");
                 else
                     holder.open.setText("N/D");
+            }
+            else{
+                holder.open.setText("N/D");
             }
 
             return convertView;

@@ -19,10 +19,9 @@ public class Place implements Parcelable{
     private int rating;
     private String phoneNumber;
     private String website;
-
     private HorairesHebdo horaires_hebdo;
-
     private Photo photoRef;
+    private ArrayList<Comment> comment;
 
     public Place() {
         place_id="";
@@ -124,6 +123,14 @@ public class Place implements Parcelable{
         this.photoRef = photoRef;
     }
 
+    public ArrayList<Comment> getComment() {
+        return comment;
+    }
+
+    public void setComment(ArrayList<Comment> comment) {
+        this.comment = comment;
+    }
+
     public int isOpen(int dayOfWeek, int hour, int min){
         if (!horaires_hebdo.getHoraires_jour().isEmpty()){
             if (horaires_hebdo.getHoraires_jour().size() >= dayOfWeek) {
@@ -191,6 +198,7 @@ public class Place implements Parcelable{
                 ", website='" + website + '\'' +
                 ", horaires_hebdo=" + horaires_hebdo +
                 ", photoRef=" + photoRef +
+                ", comment=" + comment +
                 '}';
     }
 }
