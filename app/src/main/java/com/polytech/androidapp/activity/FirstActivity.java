@@ -88,46 +88,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         topToolBar.setLogo(R.drawable.logo_nearby_2);
         Log.e("ListView: ", "Je suis la ");
         maListView = (ListViewCompat) findViewById(R.id.list);
-        maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                this.onItemClick(parent, view, position);
-            }
 
-            private void onItemClick(AdapterView<?> adapter, View v, int position) {
-
-                String place_id = ((Place) (adapter.getItemAtPosition(position))).getPlace_id();
-                String name = ((Place) (adapter.getItemAtPosition(position))).getName();
-                String address = ((Place) (adapter.getItemAtPosition(position))).getAddress();
-                double latitude = ((Place) (adapter.getItemAtPosition(position))).getLatitude();
-                double longitude = ((Place) (adapter.getItemAtPosition(position))).getLongitude();
-                ArrayList<String> types= ((Place) (adapter.getItemAtPosition(position))).getTypes();
-                int rating = ((Place) (adapter.getItemAtPosition(position))).getRating();
-                String phoneNumber= ((Place) (adapter.getItemAtPosition(position))).getPhoneNumber();
-                String website= ((Place) (adapter.getItemAtPosition(position))).getWebsite();
-                HorairesHebdo horaires_hebdo = ((Place) (adapter.getItemAtPosition(position))).getHoraires_hebdo();
-                Photo photoRef =((Place) (adapter.getItemAtPosition(position))).getPhotoRef();
-                ArrayList<Comment> commentArrayList = ((Place) (adapter.getItemAtPosition(position))).getComment();
-
-                Log.e("id_place: ", place_id);
-                Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
-                intent.putExtra("place_id", place_id);
-                intent.putExtra("name", name);
-                intent.putExtra("address", address);
-                intent.putExtra("latitude", latitude);
-                intent.putExtra("longitude", longitude);
-                intent.putExtra("types", types);
-                intent.putExtra("rating", rating);
-                intent.putExtra("phoneNumber", phoneNumber);
-                intent.putExtra("website", website);
-                intent.putExtra("horaire_hebdo", horaires_hebdo);
-                intent.putExtra("photoRef", photoRef);
-                intent.putExtra("comments", commentArrayList);
-
-                //based on item add info to intent
-                startActivity(intent);
-            }
-        });
         Log.e("ListView: ", "Je suis la ");
         //Localisation Android
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -180,6 +141,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_pref){
             Intent preference = new Intent(FirstActivity.this, PreferenceActivity.class);
+            startActivity(preference);
 
         }
         if(id == R.id.action_carte){
@@ -304,6 +266,47 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
             PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row_place, places);
             maListView.setAdapter(adapter);
+
+            maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    this.onItemClick(parent, view, position);
+                }
+
+                private void onItemClick(AdapterView<?> adapter, View v, int position) {
+
+                    String place_id = ((Place) (adapter.getItemAtPosition(position))).getPlace_id();
+                    String name = ((Place) (adapter.getItemAtPosition(position))).getName();
+                    String address = ((Place) (adapter.getItemAtPosition(position))).getAddress();
+                    double latitude = ((Place) (adapter.getItemAtPosition(position))).getLatitude();
+                    double longitude = ((Place) (adapter.getItemAtPosition(position))).getLongitude();
+                    ArrayList<String> types= ((Place) (adapter.getItemAtPosition(position))).getTypes();
+                    int rating = ((Place) (adapter.getItemAtPosition(position))).getRating();
+                    String phoneNumber= ((Place) (adapter.getItemAtPosition(position))).getPhoneNumber();
+                    String website= ((Place) (adapter.getItemAtPosition(position))).getWebsite();
+                    HorairesHebdo horaires_hebdo = ((Place) (adapter.getItemAtPosition(position))).getHoraires_hebdo();
+                    Photo photoRef =((Place) (adapter.getItemAtPosition(position))).getPhotoRef();
+                    ArrayList<Comment> commentArrayList = ((Place) (adapter.getItemAtPosition(position))).getComment();
+
+                    Log.e("id_place: ", place_id);
+                    Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
+                    intent.putExtra("place_id", place_id);
+                    intent.putExtra("name", name);
+                    intent.putExtra("address", address);
+                    intent.putExtra("latitude", latitude);
+                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("types", types);
+                    intent.putExtra("rating", rating);
+                    intent.putExtra("phoneNumber", phoneNumber);
+                    intent.putExtra("website", website);
+                    intent.putExtra("horaire_hebdo", horaires_hebdo);
+                    intent.putExtra("photoRef", photoRef);
+                    intent.putExtra("comments", commentArrayList);
+
+                    //based on item add info to intent
+                    startActivity(intent);
+                }
+            });
         }
     }
 
@@ -386,7 +389,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
             Calendar calendar = Calendar.getInstance();
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY) + 2;
+            Log.e("heure :", String.valueOf(hour));
             int minute = calendar.get(Calendar.MINUTE);
             if (list_places.get(position).getHoraires_hebdo() != null)
             {

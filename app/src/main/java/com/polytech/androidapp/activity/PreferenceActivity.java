@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.SolverVariable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
@@ -61,22 +62,32 @@ public class PreferenceActivity extends AppCompatActivity {
             }
 
             private void onItemClick(AdapterView<?> adapter, View v, int position) {
-                String name_categorie = (String) adapter.getItemAtPosition(position);
+                String name_categorie = ((TypeCategorie) adapter.getItemAtPosition(position)).getName();
                 Intent intent = new Intent(PreferenceActivity.this, FirstActivity.class);
                 intent.putExtra("name_categorie", name_categorie);
                 //based on item add info to intent
                 startActivity(intent);
             }
         });
+        TypeCategorie categorie;
         ArrayList<TypeCategorie> listPreference = new ArrayList<>();
-        listPreference.add("Culture", R.drawable.culture);
-        listPreference.add("Sport", R.drawable.sport);
-        listPreference.add("Santé", R.drawable.sante);
-        listPreference.add("Loisirs", R.drawable.loisirs);
-        listPreference.add("Resto", R.drawable.resto);
-        listPreference.add("Shop", R.drawable.shop);
-        listPreference.add("Transport", R.drawable.transport);
-        listPreference.add("DAB", R.drawable.dab);
+        categorie = new TypeCategorie("Culture", R.drawable.culture);
+        listPreference.add(categorie);
+        categorie = new TypeCategorie("Sport", R.drawable.sport);
+        listPreference.add(categorie);
+        categorie = new TypeCategorie("Santé", R.drawable.sante);
+        listPreference.add(categorie);
+        categorie = new TypeCategorie("Loisir", R.drawable.loisirs);
+        listPreference.add(categorie);
+        categorie = new TypeCategorie("Bar/Restaurant", R.drawable.resto);
+        listPreference.add(categorie);
+        categorie = new TypeCategorie("Magasin", R.drawable.shop);
+        listPreference.add(categorie);
+        categorie = new TypeCategorie("Transport", R.drawable.transport);
+        listPreference.add(categorie);
+        categorie = new TypeCategorie("DAB", R.drawable.dab);
+        listPreference.add(categorie);
+
         PreferenceAdapter adapter = new PreferenceAdapter(getApplicationContext(), R.layout.row_pref, listPreference);
         maListView.setAdapter(adapter);
     }
@@ -98,6 +109,7 @@ public class PreferenceActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_pref){
             Intent preference = new Intent(PreferenceActivity.this, PreferenceActivity.class);
+            startActivity(preference);
 
         }
         if(id == R.id.action_carte){
