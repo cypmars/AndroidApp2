@@ -107,7 +107,7 @@ public class PreferenceActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_pref){
+        if(id == R.id.action_refresh){
             Intent preference = new Intent(PreferenceActivity.this, PreferenceActivity.class);
             startActivity(preference);
 

@@ -20,12 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,7 +44,6 @@ import com.polytech.androidapp.model.Photo;
 import com.polytech.androidapp.model.Place;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -87,7 +86,17 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);
-        topToolBar.setLogo(R.drawable.logo_nearby_2);
+
+        topToolBar.setNavigationIcon(R.drawable.menu24white);
+        topToolBar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }
+        );
+
         Log.e("ListView: ", "Je suis la ");
         maListView = (ListViewCompat) findViewById(R.id.list);
 
@@ -141,7 +150,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_pref){
+        if(id == R.id.action_refresh){
             Intent preference = new Intent(FirstActivity.this, PreferenceActivity.class);
             startActivity(preference);
 
@@ -259,10 +268,10 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                                 comment.setRating(arrayComment.getJSONObject(j).optInt("rating"));
                                 comment.setTime(arrayComment.getJSONObject(j).optInt("time"));
 
-                                ArrayList<Aspect> aspectArrayList = new ArrayList<>();
-                                if (arrayComment.getJSONObject(j).has("aspect") && !arrayComment.getJSONObject(j).isNull("aspect"))
+                                if (arrayComment.getJSONObject(j).has("aspects") && !arrayComment.getJSONObject(j).isNull("aspects"))
                                 {
-                                    JSONArray arrayAspect = arrayComment.getJSONObject(j).getJSONArray("aspect");
+                                    ArrayList<Aspect> aspectArrayList = new ArrayList<>();
+                                    JSONArray arrayAspect = arrayComment.getJSONObject(j).getJSONArray("aspects");
                                     for (int k = 0; k < arrayAspect.length(); k++)
                                     {
                                         Aspect aspect = new Aspect();
@@ -270,7 +279,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                                         aspect.setType(arrayAspect.getJSONObject(k).optString("type"));
                                         aspectArrayList.add(aspect);
                                     }
-                                    comment.setAspectArrayList(aspectArrayList);
+                                    comment.setAspects(aspectArrayList);
                                 }
                                 commentArrayList.add(comment);
                             }

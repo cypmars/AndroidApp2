@@ -57,4 +57,12 @@ public class Aspect implements Parcelable{
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Aspect{" +
+                "rating=" + rating +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

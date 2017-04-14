@@ -15,7 +15,7 @@ public class Comment implements Parcelable {
     private float rating;
     private String commentaire;
     private int time;
-    private ArrayList<Aspect> aspectArrayList;
+    private ArrayList<Aspect> aspects;
 
     public Comment() {
     }
@@ -26,7 +26,8 @@ public class Comment implements Parcelable {
         rating = in.readFloat();
         commentaire = in.readString();
         time = in.readInt();
-        in.readTypedList(aspectArrayList, Aspect.CREATOR);
+        aspects = new ArrayList<>();
+        in.readList(aspects, Aspect.class.getClassLoader());
 
     }
 
@@ -82,12 +83,12 @@ public class Comment implements Parcelable {
         this.time = time;
     }
 
-    public ArrayList<Aspect> getAspectArrayList() {
-        return aspectArrayList;
+    public ArrayList<Aspect> getAspects() {
+        return aspects;
     }
 
-    public void setAspectArrayList(ArrayList<Aspect> aspectArrayList) {
-        this.aspectArrayList = aspectArrayList;
+    public void setAspects(ArrayList<Aspect> aspects) {
+        this.aspects = aspects;
     }
 
     @Override
@@ -102,6 +103,18 @@ public class Comment implements Parcelable {
         dest.writeFloat(rating);
         dest.writeString(commentaire);
         dest.writeInt(time);
-        dest.writeTypedList(aspectArrayList);
+        dest.writeList(aspects);
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "auteur='" + auteur + '\'' +
+                ", language='" + language + '\'' +
+                ", rating=" + rating +
+                ", commentaire='" + commentaire + '\'' +
+                ", time=" + time +
+                ", aspects=" + aspects +
+                '}';
     }
 }
