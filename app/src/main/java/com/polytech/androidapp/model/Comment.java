@@ -26,6 +26,8 @@ public class Comment implements Parcelable {
         rating = in.readFloat();
         commentaire = in.readString();
         time = in.readInt();
+        in.readTypedList(aspectArrayList, Aspect.CREATOR);
+
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -100,6 +102,6 @@ public class Comment implements Parcelable {
         dest.writeFloat(rating);
         dest.writeString(commentaire);
         dest.writeInt(time);
-        dest.writeArray(aspectArrayList.toArray());
+        dest.writeTypedList(aspectArrayList);
     }
 }

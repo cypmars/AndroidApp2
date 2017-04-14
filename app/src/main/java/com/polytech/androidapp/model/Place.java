@@ -133,7 +133,7 @@ public class Place implements Parcelable{
 
     public int isOpen(int dayOfWeek, int hour, int min){
         if (!horaires_hebdo.getHoraires_jour().isEmpty()){
-            if (horaires_hebdo.getHoraires_jour().size() >= dayOfWeek) {
+            if (horaires_hebdo.getHoraires_jour().size() > dayOfWeek) {
                 if (horaires_hebdo.getHoraires_jour().get(dayOfWeek).getFermeture() != null && horaires_hebdo.getHoraires_jour().get(dayOfWeek).getOuverture() != null){
                     String fermeture = horaires_hebdo.getHoraires_jour().get(dayOfWeek).getFermeture();
                     int heure_ferm = Integer.parseInt(fermeture.substring(0, 1));
@@ -158,15 +158,6 @@ public class Place implements Parcelable{
             return -1;
         }
     }
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-    }
 
     public static final Parcelable.Creator<Place> CREATOR = new Parcelable.Creator<Place>()
     {
@@ -184,9 +175,18 @@ public class Place implements Parcelable{
     };
 
     private Place(Parcel in) {
+        this.place_id = in.readString();
         this.name = in.readString();
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
+        this.address = in.readString();
+        this.rating = in.readInt();
+        in.readStringList(types);
+        this.phoneNumber = in.readString();
+        this.website = in.readString();
+        this.horaires_hebdo = in.readParcelable(getClass().getClassLoader());
+        this.photoRef = in.readParcelable(getClass().getClassLoader());
+        in.readTypedList(comment, Comment.CREATOR);
     }
 
     @Override
@@ -205,5 +205,26 @@ public class Place implements Parcelable{
                 ", photoRef=" + photoRef +
                 ", comment=" + comment +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(place_id);
+        dest.writeString(name);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeString(address);
+        dest.writeInt(rating);
+        dest.writeStringList(types);
+        dest.writeString(phoneNumber);
+        dest.writeString(website);
+        dest.writeParcelable(horaires_hebdo, flags);
+        dest.writeParcelable(photoRef, flags);
+        dest.writeTypedList(comment);
     }
 }

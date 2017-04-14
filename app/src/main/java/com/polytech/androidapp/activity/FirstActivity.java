@@ -263,11 +263,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row_place, places);
-            maListView.setAdapter(adapter);
-
-            maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            /*maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     this.onItemClick(parent, view, position);
@@ -306,7 +302,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     //based on item add info to intent
                     startActivity(intent);
                 }
-            });
+            });*/
+            PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row_place, places);
+            maListView.setAdapter(adapter);
         }
     }
 
@@ -324,12 +322,13 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         @NonNull
         @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder = new ViewHolder();
 
                 convertView = inflater.inflate(resource, null);
                 holder.name = (TextView)convertView.findViewById(R.id.name);
+
                 holder.image = (ImageView)convertView.findViewById(R.id.imagePlace) ;
                 holder.dist = (TextView)convertView.findViewById(R.id.dist);
                 holder.open = (TextView)convertView.findViewById(R.id.open);
@@ -338,6 +337,42 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 holder.www = (Button)convertView.findViewById(R.id.buttonWeb);
                 convertView.setTag(holder);
 
+                holder.image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String place_id = list_places.get(position).getPlace_id();
+                        String name = list_places.get(position).getName();
+                        String address = list_places.get(position).getAddress();
+                        double latitude = list_places.get(position).getLatitude();
+                        double longitude = list_places.get(position).getLongitude();
+                        ArrayList<String> types= list_places.get(position).getTypes();
+                        int rating = list_places.get(position).getRating();
+                        String phoneNumber= list_places.get(position).getPhoneNumber();
+                        String website= list_places.get(position).getWebsite();
+                        HorairesHebdo horaires_hebdo = list_places.get(position).getHoraires_hebdo();
+                        Photo photoRef =list_places.get(position).getPhotoRef();
+                        ArrayList<Comment> commentArrayList = list_places.get(position).getComment();
+
+
+                        Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
+                        intent.putExtra("place_id", place_id);
+                        intent.putExtra("name", name);
+                        intent.putExtra("address", address);
+                        intent.putExtra("latitude", latitude);
+                        intent.putExtra("longitude", longitude);
+                        intent.putExtra("types", types);
+                        intent.putExtra("rating", rating);
+                        intent.putExtra("phoneNumber", phoneNumber);
+                        intent.putExtra("website", website);
+                        intent.putExtra("horaire_hebdo", horaires_hebdo);
+                        intent.putExtra("photoRef", photoRef);
+                        intent.putExtra("comments", commentArrayList);
+
+                        //based on item add info to intent
+                        startActivity(intent);
+                    }
+                });
 
             // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
             String placeId=list_places.get(position).getPlace_id();

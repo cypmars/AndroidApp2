@@ -24,6 +24,7 @@ public class HorairesHebdo implements Parcelable{
 
     protected HorairesHebdo(Parcel in) {
         horairesHebdo = in.readString();
+        in.readTypedList(horaires_jour, HorairesJour.CREATOR);
     }
 
     public static final Creator<HorairesHebdo> CREATOR = new Creator<HorairesHebdo>() {
@@ -62,7 +63,7 @@ public class HorairesHebdo implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(horairesHebdo);
-        dest.writeArray(horaires_jour.toArray());
+        dest.writeTypedList(horaires_jour);
     }
 
     @Override
