@@ -36,6 +36,7 @@ import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.polytech.androidapp.R;
+import com.polytech.androidapp.model.Aspect;
 import com.polytech.androidapp.model.Comment;
 import com.polytech.androidapp.model.HorairesHebdo;
 import com.polytech.androidapp.model.HorairesJour;
@@ -43,6 +44,7 @@ import com.polytech.androidapp.model.Photo;
 import com.polytech.androidapp.model.Place;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -233,15 +235,47 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                                 arrayJour.add(horairesJour);
                             }
                             horairesHebdo.setHoraires_jour(arrayJour);
-                            horairesHebdo.setHorairesHebdo(jsonArray.getJSONObject(i).optString("horairesHebdo"));
+                            horairesHebdo.setHorairesHebdo(jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").optString("horairesHebdo"));
                             place.setHoraires_hebdo(horairesHebdo);
                         }
 
                         Photo photo = new Photo();
-                        photo.setHeight(jsonArray.getJSONObject(i).optInt("height"));
-                        photo.setWidth(jsonArray.getJSONObject(i).optInt("width"));
-                        photo.setReference(jsonArray.getJSONObject(i).optString("reference"));
-                        place.setPhotoRef(photo);
+                        if (jsonArray.getJSONObject(i).has("photoRef") && !jsonArray.getJSONObject(i).isNull("photoRef"))
+                        {
+                            photo.setHeight(jsonArray.getJSONObject(i).getJSONObject("photoRef").optInt("height"));
+                            photo.setWidth(jsonArray.getJSONObject(i).getJSONObject("photoRef").optInt("width"));
+                            photo.setReference(jsonArray.getJSONObject(i).getJSONObject("photoRef").optString("reference"));
+                            place.setPhotoRef(photo);
+                        }
+
+                        ArrayList<Comment> commentArrayList= new ArrayList<>();
+                        if (jsonArray.getJSONObject(i).has("comment") && !jsonArray.getJSONObject(i).isNull("comment")){
+                            JSONArray arrayComment = jsonArray.getJSONObject(i).getJSONArray("comment");
+                            for (int j = 0; j < arrayComment.length(); j++){
+                                Comment comment = new Comment();
+                                comment.setAuteur(arrayComment.getJSONObject(j).optString("auteur"));
+                                comment.setCommentaire(arrayComment.getJSONObject(j).optString("commentaire"));
+                                comment.setLanguage(arrayComment.getJSONObject(j).optString("language"));
+                                comment.setRating(arrayComment.getJSONObject(j).optInt("rating"));
+                                comment.setTime(arrayComment.getJSONObject(j).optInt("time"));
+
+                                ArrayList<Aspect> aspectArrayList = new ArrayList<>();
+                                if (arrayComment.getJSONObject(j).has("aspect") && !arrayComment.getJSONObject(j).isNull("aspect"))
+                                {
+                                    JSONArray arrayAspect = arrayComment.getJSONObject(j).getJSONArray("aspect");
+                                    for (int k = 0; k < arrayAspect.length(); k++)
+                                    {
+                                        Aspect aspect = new Aspect();
+                                        aspect.setRating(arrayAspect.getJSONObject(k).optInt("rating"));
+                                        aspect.setType(arrayAspect.getJSONObject(k).optString("type"));
+                                        aspectArrayList.add(aspect);
+                                    }
+                                    comment.setAspectArrayList(aspectArrayList);
+                                }
+                                commentArrayList.add(comment);
+                            }
+                        }
+                        place.setComment(commentArrayList);
                         /*if (jsonArray.getJSONObject(i).has("opening_hours")) {
                             if (jsonArray.getJSONObject(i).getJSONObject("opening_hours").has("open_now")) {
                                 if (jsonArray.getJSONObject(i).getJSONObject("opening_hours").getString("open_now").equals("true")) {

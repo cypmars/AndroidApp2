@@ -186,7 +186,7 @@ public class Place implements Parcelable{
         this.website = in.readString();
         this.horaires_hebdo = in.readParcelable(getClass().getClassLoader());
         this.photoRef = in.readParcelable(getClass().getClassLoader());
-        in.readTypedList(comment, Comment.CREATOR);
+        in.readList(comment, Comment.class.getClassLoader());
     }
 
     @Override
@@ -225,6 +225,6 @@ public class Place implements Parcelable{
         dest.writeString(website);
         dest.writeParcelable(horaires_hebdo, flags);
         dest.writeParcelable(photoRef, flags);
-        dest.writeTypedList(comment);
+        dest.writeList(comment);
     }
 }
