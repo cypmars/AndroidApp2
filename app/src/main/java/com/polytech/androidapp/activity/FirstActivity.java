@@ -244,6 +244,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                                 arrayJour.add(horairesJour);
                             }
                             horairesHebdo.setHoraires_jour(arrayJour);
+
                             horairesHebdo.setHorairesHebdo(jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").optString("horairesHebdo"));
                             place.setHoraires_hebdo(horairesHebdo);
                         }
