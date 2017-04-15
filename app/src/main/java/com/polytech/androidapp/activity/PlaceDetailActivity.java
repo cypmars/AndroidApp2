@@ -109,15 +109,15 @@ public class PlaceDetailActivity extends AppCompatActivity {
         } else {
             open.setText("N/D");
         }
-
+        Log.e("WARNING!!!!", place.toString());
         TypesAdapter typeAdapter = new TypesAdapter(getApplicationContext(), R.layout.row_types, place.getTypes());
-        typeListView.setAdapter(typeAdapter);
+        //typeListView.setAdapter(typeAdapter);
 
         HoursAdapter hoursAdapter = new HoursAdapter(getApplicationContext(), R.layout.row_hours, place.getHoraires_hebdo().getHorairesHebdo());
-        hoursListView.setAdapter(hoursAdapter);
+        //hoursListView.setAdapter(hoursAdapter);
 
         CommentsAdapter commentAdapter = new CommentsAdapter(getApplicationContext(), R.layout.row_comments, place.getComment());
-        commentListView.setAdapter(commentAdapter);
+        //commentListView.setAdapter(commentAdapter);
 
     }
 
