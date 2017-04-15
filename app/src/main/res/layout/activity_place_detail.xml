@@ -60,59 +60,232 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/linearsearch">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp">
+            android:layout_height="wrap_content">
 
-            <ImageView
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
-                app:srcCompat="@drawable/default_image"
-                android:scaleType="fitXY"/>
+                android:layout_height="150dp"
+                android:id="@+id/frameTitle">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="170dp"
-                app:srcCompat="@drawable/gradient_filter" />
+                <ImageView
+                    android:id="@+id/imageTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    app:srcCompat="@drawable/default_image"
+                    android:scaleType="fitXY"/>
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    app:srcCompat="@drawable/gradient_filter" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/linearTop"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/horloge24white" />
+
+                        <TextView
+                            android:id="@+id/open"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="1"
+                            android:text="Ouvert"
+                            android:textColor="@android:color/background_light"
+                            android:textSize="18sp" />
+
+                        <RatingBar
+                            android:id="@+id/rate"
+                            style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="10dp"
+                            android:rating="4"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/background_light"
+                            android:textSize="18sp" />
+
+                        <ImageView
+                            android:id="@+id/imageView6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/marqueur24white" />
+
+                        <TextView
+                            android:id="@+id/dist"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_weight="0.48"
+                            android:text="1,5 km"
+                            android:textColor="@android:color/background_light"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/name"
+                        style="@android:style/TextAppearance.Large"
+                        android:layout_width="match_parent"
+                        android:textAlignment="center"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="name"
+                        android:textColor="#FFFFFF"
+                        android:textSize="40sp"
+                        android:layout_below="@+id/linearTop"/>
+
+                    <TextView
+                        android:id="@+id/address"
+                        style="@android:style/TextAppearance.Large"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_below="@+id/name"
+                        android:text="address"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
+
+
+                </RelativeLayout>
+            </FrameLayout>
+            <android.support.v7.widget.ListViewCompat
+                android:id="@+id/typelist"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/frameTitle" />
+            <View
+                android:id="@+id/HR"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorNearbyDark"
+                android:layout_below="@+id/typelist"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="10dp"/>
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:id="@+id/relativeInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/HR"
+                android:layout_marginTop="10dp">
 
                 <LinearLayout
-                    android:id="@+id/linear"
+                    android:id="@+id/linearTel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp">
-
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/telIcon"
+                        app:srcCompat="@drawable/local_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp" />
+                    <TextView
+                        android:id="@+id/num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="04 91 75 84 57"
+                        android:layout_marginLeft="10dp" />
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/name"
-                    style="@android:style/TextAppearance.Large"
-                    android:layout_width="match_parent"
-                    android:textAlignment="center"
-                    android:layout_height="wrap_content"
-                    android:text="name"
-                    android:textColor="#FFFFFF"
-                    android:textSize="40sp"
-                    android:layout_below="@+id/linear"/>
-
-                <TextView
-                    android:id="@+id/address"
-                    style="@android:style/TextAppearance.Large"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/linearTel"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/earth"
+                        android:layout_marginLeft="10dp"/>
+                    <TextView
+                        android:id="@+id/website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="www.website.com"
+                        android:layout_marginLeft="10dp" />
+                </LinearLayout>
+            </RelativeLayout>
+            <View
+                android:id="@+id/HR2"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorNearbyDark"
+                android:layout_below="@+id/relativeInfo"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="10dp"/>
+            <RelativeLayout
+                android:id="@+id/relativeHoraire"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/HR2"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/textViewHoraireTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Horaires d'ouverture/fermeture"
                     android:textAlignment="center"
-                    android:layout_below="@+id/name"
-                    android:text="address"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp" />
-
+                    android:textSize="18sp"
+                    android:textColor="@color/colorNearbyDark"/>
+                <android.support.v7.widget.ListViewCompat
+                    android:id="@+id/hourslist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_below="@+id/textViewHoraireTitle" />
 
             </RelativeLayout>
-        </FrameLayout>
-
+            <View
+                android:id="@+id/HR3"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorNearbyDark"
+                android:layout_below="@+id/relativeHoraire"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="10dp"/>
+            <RelativeLayout
+                android:id="@+id/relativeComments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/HR3"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:id="@+id/textviewCommentTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Commentaires"
+                    android:textAlignment="center"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorNearbyDark"/>
+                <android.support.v7.widget.ListViewCompat
+                    android:id="@+id/commentlist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_below="@+id/textviewCommentTitle" />
+            </RelativeLayout>
+        </RelativeLayout>
     </ScrollView>
-
 </RelativeLayout>
