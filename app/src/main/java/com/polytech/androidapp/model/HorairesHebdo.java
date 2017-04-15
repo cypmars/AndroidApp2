@@ -11,19 +11,20 @@ import java.util.ArrayList;
 
 public class HorairesHebdo implements Parcelable{
     private ArrayList<HorairesJour> horaires_jour ;
-    private String horairesHebdo;
+    private ArrayList<String> horairesHebdo;
 
     public HorairesHebdo(){
 
     }
 
-    public HorairesHebdo(ArrayList<HorairesJour> horaires_jour, String horairesHebdo) {
+    public HorairesHebdo(ArrayList<HorairesJour> horaires_jour, ArrayList<String> horairesHebdo) {
         this.horaires_jour = horaires_jour;
         this.horairesHebdo = horairesHebdo;
     }
 
     protected HorairesHebdo(Parcel in) {
-        horairesHebdo = in.readString();
+        horairesHebdo = new ArrayList<>();
+        in.readList(horairesHebdo, String.class.getClassLoader());
         horaires_jour = new ArrayList<>();
         in.readList(horaires_jour, HorairesJour.class.getClassLoader());
     }
@@ -48,11 +49,11 @@ public class HorairesHebdo implements Parcelable{
         this.horaires_jour = horaires_jour;
     }
 
-    public String getHorairesHebdo() {
+    public ArrayList<String> getHorairesHebdo() {
         return horairesHebdo;
     }
 
-    public void setHorairesHebdo(String horairesHebdo) {
+    public void setHorairesHebdo(ArrayList<String> horairesHebdo) {
         this.horairesHebdo = horairesHebdo;
     }
 
@@ -63,7 +64,7 @@ public class HorairesHebdo implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(horairesHebdo);
+        dest.writeList(horairesHebdo);
         dest.writeList(horaires_jour);
     }
 

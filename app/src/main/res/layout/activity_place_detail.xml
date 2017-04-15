@@ -151,7 +151,7 @@
                         android:layout_marginTop="10dp"
                         android:text="name"
                         android:textColor="#FFFFFF"
-                        android:textSize="40sp"
+                        android:textSize="28sp"
                         android:layout_below="@+id/linearTop"/>
 
                     <TextView

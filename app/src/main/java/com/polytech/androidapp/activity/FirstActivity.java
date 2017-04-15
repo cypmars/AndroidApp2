@@ -384,35 +384,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onClick(View v) {
 
-                        String place_id = list_places.get(position).getPlace_id();
-                        String name = list_places.get(position).getName();
-                        String address = list_places.get(position).getAddress();
-                        double latitudes = list_places.get(position).getLatitude();
-                        double longitudes = list_places.get(position).getLongitude();
-                        ArrayList<String> types= (ArrayList<String>)list_places.get(position).getTypes();
-                        int rating = list_places.get(position).getRating();
-                        String phoneNumber= list_places.get(position).getPhoneNumber();
-                        String website= list_places.get(position).getWebsite();
-                        HorairesHebdo horaires_hebdo = list_places.get(position).getHoraires_hebdo();
-                        Photo photoRef =list_places.get(position).getPhotoRef();
-                        ArrayList<Comment> commentArrayList = list_places.get(position).getComment();
-
-
                         Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
-                        intent.putExtra("place_id", place_id);
-                        intent.putExtra("name", name);
-                        intent.putExtra("address", address);
                         intent.putExtra("ourlatitude", latitude);
                         intent.putExtra("ourlongitude", longitude);
-                        intent.putExtra("latitude", latitudes);
-                        intent.putExtra("longitude", longitudes);
-                        intent.putExtra("types", types);
-                        intent.putExtra("rating", rating);
-                        intent.putExtra("phoneNumber", phoneNumber);
-                        intent.putExtra("website", website);
-                        intent.putExtra("horaire_hebdo", horaires_hebdo);
-                        intent.putExtra("photoRef", photoRef);
-                        intent.putExtra("comments", commentArrayList);
                         intent.putExtra("place", list_places.get(position));
 
                         //based on item add info to intent
