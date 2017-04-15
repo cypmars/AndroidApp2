@@ -23,23 +23,38 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <android.support.v7.widget.SearchView
+    <LinearLayout
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
-        android:background="@color/common_google_signin_btn_text_light_focused"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/common_google_signin_btn_text_dark_disabled">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/search24grey"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp" />
 
-        <EditText
-            android:id="@+id/search_edit_frame"
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            style="@android:style/Widget.DeviceDefault.Light.AutoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="search" />
+            android:backgroundTint="@color/colorNearbyDark"
+            android:ems="10"
+            android:text="Please enter your place"
+            android:textColor="@color/colorNearbyDark"
+            android:textColorLink="@color/colorNearbyDark"
+            android:layout_marginRight="60dp"
+            android:layout_marginLeft="10dp">
 
-    </android.support.v7.widget.SearchView>
+            <requestFocus />
+        </AutoCompleteTextView>
+
+    </LinearLayout>
     <android.support.v7.widget.ListViewCompat
         android:id="@+id/list"
         android:layout_below="@+id/search_bar"

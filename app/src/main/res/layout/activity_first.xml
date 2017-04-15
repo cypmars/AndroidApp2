@@ -28,7 +28,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
+        android:orientation="horizontal"
         android:background="@color/common_google_signin_btn_text_dark_disabled">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/search24grey"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp" />
 
         <AutoCompleteTextView
             android:id="@+id/autoCompleteTextView"
@@ -39,7 +47,9 @@
             android:ems="10"
             android:text="Please enter your place"
             android:textColor="@color/colorNearbyDark"
-            android:textColorLink="@color/colorNearbyDark">
+            android:textColorLink="@color/colorNearbyDark"
+            android:layout_marginRight="60dp"
+            android:layout_marginLeft="10dp">
 
             <requestFocus />
         </AutoCompleteTextView>
