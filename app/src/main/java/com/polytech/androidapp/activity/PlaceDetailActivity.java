@@ -1,11 +1,14 @@
 package com.polytech.androidapp.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,10 +20,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.polytech.androidapp.R;
 import com.polytech.androidapp.model.Comment;
 import com.polytech.androidapp.model.HorairesHebdo;
+import com.polytech.androidapp.model.Place;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class PlaceDetailActivity extends AppCompatActivity {
 
@@ -39,8 +45,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent preference = new Intent(PlaceDetailActivity.this, FirstActivity.class);
-                        startActivity(preference);
+                        finish();
                     }
                 }
         );
@@ -62,15 +67,19 @@ public class PlaceDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String nameString = intent.getStringExtra("name");
         String addressString = intent.getStringExtra("address");
-        String phoneString = intent.getStringExtra("name");
-        String websiteString = intent.getStringExtra("name");
+        String phoneString = intent.getStringExtra("phoneNumber");
+        String websiteString = intent.getStringExtra("website");
         int rateInt = intent.getIntExtra("rating",0 );
+        double ourlatitude = intent.getDoubleExtra("ourlatitude", 0.00000);
+        double ourlongitude = intent.getDoubleExtra("ourlongitude", 0.00000);
         double latitude = intent.getDoubleExtra("latitude", 0.00000);
         double longitude = intent.getDoubleExtra("longitude", 0.00000);
 
-        ArrayList<String> typeList = intent.getStringArrayListExtra("types");
+        List<String> typeList = intent.getStringArrayListExtra("types");
         HorairesHebdo horairesHebdo = intent.getParcelableExtra("horaires_hebdo");
         ArrayList<Comment> commentArrayList = intent.getParcelableArrayListExtra("comments");
+
+        Place place = intent.getParcelableExtra("place");
 
         name.setText(nameString);
         address.setText(addressString);
@@ -78,7 +87,36 @@ public class PlaceDetailActivity extends AppCompatActivity {
         phone.setText(phoneString);
         website.setText(websiteString);
 
+        float res[] =  new float[1];
+        Location.distanceBetween(latitude, longitude, ourlatitude, ourlongitude, res);
+        Log.e("distance: ", String.valueOf(res[0]));
+        float distance = ((int) res[0])/1000.0f;
 
+        if (res != null)
+        {
+            dist.setText(String.valueOf(distance)+" km");
+        }
+
+
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY) + 2;
+        Log.e("heure :", String.valueOf(hour));
+        int minute = calendar.get(Calendar.MINUTE);
+        if (horairesHebdo != null)
+        {
+            if (place.isOpen(dayOfWeek, hour, minute) == 1){
+                open.setTextColor(Color.GREEN);
+                open.setText("Ouvert");
+            }
+            else if(place.isOpen(dayOfWeek, hour, minute) == 0)
+                open.setText("Fermé");
+            else
+                open.setText("N/D");
+        }
+        else{
+            open.setText("N/D");
+        }
 
     }
 
