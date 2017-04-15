@@ -49,12 +49,12 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="170dp"
                 app:srcCompat="@drawable/default_image" />
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="170dp"
                 app:srcCompat="@drawable/gradient_filter" />
 
             <RelativeLayout

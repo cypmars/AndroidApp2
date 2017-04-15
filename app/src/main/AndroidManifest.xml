@@ -26,7 +26,8 @@
             android:value="AIzaSyAdoD8DBUXy1CqCmz2q4ynbGE3kJdMZDic" />
 
         <activity android:name=".activity.PlaceDetailActivity" />
-        <activity android:name=".activity.PreferenceActivity"></activity>
+        <activity android:name=".activity.PreferenceActivity" />
+        <activity android:name=".activity.AdvanceSearchActivity"></activity>
     </application>
 
 </manifest>

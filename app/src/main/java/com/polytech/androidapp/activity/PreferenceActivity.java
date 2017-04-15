@@ -52,7 +52,16 @@ public class PreferenceActivity extends AppCompatActivity {
 
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);
-        topToolBar.setLogo(R.drawable.logo_nearby_2);
+        topToolBar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        topToolBar.setNavigationOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent back = new Intent(PreferenceActivity.this, FirstActivity.class);
+                        startActivity(back);
+                    }
+                }
+        );
 
         maListView = (ListViewCompat) findViewById(R.id.list);
         maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -95,7 +104,7 @@ public class PreferenceActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_pref, menu);
         return true;
     }
 
@@ -107,12 +116,9 @@ public class PreferenceActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_refresh){
-            Intent preference = new Intent(PreferenceActivity.this, PreferenceActivity.class);
-            startActivity(preference);
-
-        }
-        if(id == R.id.action_carte){
+        if(id == R.id.action_settings){
+            Intent advanceSearch = new Intent(PreferenceActivity.this, AdvanceSearchActivity.class);
+            startActivity(advanceSearch);
         }
         return super.onOptionsItemSelected(item);
     }

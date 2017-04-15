@@ -92,7 +92,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        Intent preference = new Intent(FirstActivity.this, PreferenceActivity.class);
+                        startActivity(preference);
                     }
                 }
         );
@@ -151,9 +152,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_refresh){
-            Intent preference = new Intent(FirstActivity.this, PreferenceActivity.class);
+            Intent preference = new Intent(FirstActivity.this, FirstActivity.class);
             startActivity(preference);
-
         }
         if(id == R.id.action_carte){
         }

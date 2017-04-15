@@ -23,26 +23,33 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/toolbar"
-        android:background="@color/common_google_signin_btn_text_light_focused"
-        android:orientation="horizontal">
-
-
-    <EditText
-        android:id="@+id/search_edit_frame"
+    <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:text="search" />
+        android:layout_below="@+id/toolbar"
+        android:background="@color/common_google_signin_btn_text_dark_disabled">
 
-    </android.support.v7.widget.SearchView>
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            style="@android:style/Widget.DeviceDefault.Light.AutoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorNearbyDark"
+            android:ems="10"
+            android:text="Please enter your place"
+            android:textColor="@color/colorNearbyDark"
+            android:textColorLink="@color/colorNearbyDark">
+
+            <requestFocus />
+        </AutoCompleteTextView>
+
+    </LinearLayout>
+
+
     <android.support.v7.widget.ListViewCompat
         android:id="@+id/list"
-        android:layout_below="@+id/search_bar"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/linear" />
 </RelativeLayout>
