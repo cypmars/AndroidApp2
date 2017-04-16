@@ -5,12 +5,13 @@
 
     <TextView
 
-        android:textColor="#787878"
-        android:textSize="18sp"
-        android:padding="16dp"
+        android:textColor="#ffffff"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HELLO"/>
+        android:text="HELLO"
+        android:background="@drawable/shape_button_nearby"/>
 
 </LinearLayout>

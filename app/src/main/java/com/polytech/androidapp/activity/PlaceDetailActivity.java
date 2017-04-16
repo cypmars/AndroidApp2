@@ -23,6 +23,14 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.PlacePhotoResult;
+import com.google.android.gms.location.places.Places;
 import com.polytech.androidapp.R;
 import com.polytech.androidapp.model.Comment;
 import com.polytech.androidapp.model.Place;
@@ -30,15 +38,24 @@ import com.polytech.androidapp.model.Place;
 import java.util.Calendar;
 import java.util.List;
 
-public class PlaceDetailActivity extends AppCompatActivity {
+public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private TypesHorizontalAdapter horizontalAdapter;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_detail);
 
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .addApi(LocationServices.API)
+                .enableAutoManage(this, this)
+                .build();
         setTitle(null);
 
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
@@ -54,7 +71,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
                 }
         );
 
-        ImageView imageTitle = (ImageView) findViewById(R.id.imageTitle);
+        final ImageView imageTitle = (ImageView) findViewById(R.id.imageTitle);
         TextView open = (TextView) findViewById(R.id.open);
         RatingBar rate = (RatingBar) findViewById(R.id.rate);
         TextView dist = (TextView) findViewById(R.id.dist);
@@ -79,6 +96,41 @@ public class PlaceDetailActivity extends AppCompatActivity {
         rate.setRating(place.getRating());
         phone.setText(place.getPhoneNumber());
         website.setText(place.getWebsite());
+
+        // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
+        String placeId=place.getPlace_id();
+        final ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback = new ResultCallback<PlacePhotoResult>() {
+            @Override
+            public void onResult(PlacePhotoResult placePhotoResult) {
+                if (!placePhotoResult.getStatus().isSuccess()) {
+                    return;
+                }
+                imageTitle.setImageBitmap(placePhotoResult.getBitmap());
+            }
+        };
+
+/**
+ * Load a bitmap from the photos API asynchronously
+ * by using buffers and result callbacks.
+ */
+        Places.GeoDataApi.getPlacePhotos(mGoogleApiClient, placeId).setResultCallback(new ResultCallback<PlacePhotoMetadataResult>() {
+            @Override
+            public void onResult(PlacePhotoMetadataResult photos) {
+                if (!photos.getStatus().isSuccess()) {
+                    return;
+                }
+
+                PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+                if (photoMetadataBuffer.getCount() > 0) {
+                    photoMetadataBuffer.get(0)
+                            .getScaledPhoto(mGoogleApiClient,
+                                    imageTitle.getWidth(),
+                                    imageTitle.getHeight())
+                            .setResultCallback(mDisplayPhotoResultCallback);
+                }
+                photoMetadataBuffer.release();
+            }
+        });
 
         float res[] = new float[1];
         Location.distanceBetween(latitude, longitude, place.getLatitude(), place.getLongitude(), res);
@@ -148,6 +200,11 @@ public class PlaceDetailActivity extends AppCompatActivity {
         if (id == R.id.action_carte) {
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     public class TypesHorizontalAdapter extends RecyclerView.Adapter<TypesHorizontalAdapter.MyViewHolder> {
