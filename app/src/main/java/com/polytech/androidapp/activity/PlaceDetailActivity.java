@@ -7,7 +7,9 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,21 +23,16 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.PlacePhotoResult;
 import com.polytech.androidapp.R;
 import com.polytech.androidapp.model.Comment;
-import com.polytech.androidapp.model.HorairesHebdo;
 import com.polytech.androidapp.model.Place;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class PlaceDetailActivity extends AppCompatActivity {
+
+    private TypesHorizontalAdapter horizontalAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +64,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         TextView phone = (TextView) findViewById(R.id.num);
         TextView website = (TextView) findViewById(R.id.website);
 
-        ListViewCompat typeListView = (ListViewCompat) findViewById(R.id.typelist);
+        RecyclerView typeHorizontalView = (RecyclerView) findViewById(R.id.horizontal_recycler_view);
         ListViewCompat hoursListView = (ListViewCompat) findViewById(R.id.hourslist);
         ListViewCompat commentListView = (ListViewCompat) findViewById(R.id.commentlist);
 
@@ -109,15 +106,23 @@ public class PlaceDetailActivity extends AppCompatActivity {
         } else {
             open.setText("N/D");
         }
-        Log.e("WARNING!!!!", place.toString());
-        TypesAdapter typeAdapter = new TypesAdapter(getApplicationContext(), R.layout.row_types, place.getTypes());
-        //typeListView.setAdapter(typeAdapter);
 
-        HoursAdapter hoursAdapter = new HoursAdapter(getApplicationContext(), R.layout.row_hours, place.getHoraires_hebdo().getHorairesHebdo());
-        //hoursListView.setAdapter(hoursAdapter);
+        Log.e("types= ", place.getTypes().toString());
+        horizontalAdapter = new TypesHorizontalAdapter(place.getTypes());
+        LinearLayoutManager horizontalLayoutManager
+                = new LinearLayoutManager(PlaceDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        typeHorizontalView.setLayoutManager(horizontalLayoutManager);
+
+        typeHorizontalView.setAdapter(horizontalAdapter);
+
+        if (place.getHoraires_hebdo() != null)
+        {
+            HoursAdapter hoursAdapter = new HoursAdapter(getApplicationContext(), R.layout.row_hours, place.getHoraires_hebdo().getHorairesHebdo());
+            hoursListView.setAdapter(hoursAdapter);
+        }
 
         CommentsAdapter commentAdapter = new CommentsAdapter(getApplicationContext(), R.layout.row_comments, place.getComment());
-        //commentListView.setAdapter(commentAdapter);
+        commentListView.setAdapter(commentAdapter);
 
     }
 
@@ -145,35 +150,48 @@ public class PlaceDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class TypesAdapter extends ArrayAdapter {
+    public class TypesHorizontalAdapter extends RecyclerView.Adapter<TypesHorizontalAdapter.MyViewHolder> {
 
-        private List<String> list_types;
-        private int resource;
-        private LayoutInflater inflater;
+        private List<String> horizontalList;
 
-        public TypesAdapter(Context context, int resource, List<String> objects) {
-            super(context, resource, objects);
-            list_types = objects;
-            this.resource = resource;
-            inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            public TextView typeTextView;
+
+            public MyViewHolder(View view) {
+                super(view);
+                typeTextView = (TextView) view.findViewById(R.id.type);
+
+            }
         }
 
-        @NonNull
+
+        public TypesHorizontalAdapter(List<String> horizontalList) {
+            this.horizontalList = horizontalList;
+        }
+
         @Override
-        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.row_types, parent, false);
 
-            final ViewHolder holder = new ViewHolder();
-
-            convertView = inflater.inflate(resource, null);
-            holder.typeButton = (Button) convertView.findViewById(R.id.buttonType);
-            holder.typeButton.setText(list_types.get(position));
-            convertView.setTag(holder);
-
-            return convertView;
+            return new MyViewHolder(itemView);
         }
 
-        class ViewHolder {
-            private Button typeButton;
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            holder.typeTextView.setText(horizontalList.get(position));
+
+            holder.typeTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return horizontalList.size();
         }
     }
 
@@ -198,8 +216,8 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
             convertView = inflater.inflate(resource, null);
             holder.HoraireJourString = (TextView) convertView.findViewById(R.id.textHorairesJour);
-            holder.HoraireJourString.setText(list_jours.get(position));
             convertView.setTag(holder);
+            holder.HoraireJourString.setText(list_jours.get(position));
 
             return convertView;
         }
@@ -209,7 +227,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         }
     }
 
-    public class CommentsAdapter extends ArrayAdapter {
+    public class CommentsAdapter extends ArrayAdapter<Comment> {
 
         private List<Comment> list_comment;
         private int resource;

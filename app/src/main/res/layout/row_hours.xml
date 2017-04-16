@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:layout_gravity="start|top">
 
-    <TextView
-        android:id="@+id/textHorairesJour"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="Lundi "/>
-</RelativeLayout>
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/textHorairesJour"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lundi "
+            android:textAlignment="center"/>
+    </LinearLayout>
+
+</ScrollView>

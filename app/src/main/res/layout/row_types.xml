@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/buttonType"
+    <TextView
+
+        android:textColor="#787878"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:background="@color/colorAccent"
-        android:radius="50dp"
-        android:text="Button"
-        android:textColor="@color/common_google_signin_btn_text_dark_default" />
+        android:text="HELLO"/>
+
 </LinearLayout>

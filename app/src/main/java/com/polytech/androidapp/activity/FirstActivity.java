@@ -131,7 +131,24 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         longitude = 5.3966877000000295;
 
         // On récupère le json de la requête
-        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
+        Intent intent = getIntent();
+        String url_request ="";
+        if(intent != null)
+        {
+            if (intent.getStringExtra("name_categorie") != null)
+            {
+                String name_categorie = intent.getStringExtra("name_categorie");
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&pref="+ name_categorie;
+            }
+            else
+            {
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
+            }
+        }
+        else
+        {
+            url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
+        }
         Log.e("url: ",url_request);
         new JSONTask().execute(url_request);
     }
