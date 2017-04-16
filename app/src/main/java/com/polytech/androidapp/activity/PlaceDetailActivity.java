@@ -304,12 +304,21 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             final ViewHolder holder = new ViewHolder();
 
             convertView = inflater.inflate(resource, null);
+            holder.person_name = (TextView) convertView.findViewById(R.id.person_name);
+            holder.commentaire = (TextView) convertView.findViewById(R.id.commentaire);
+            holder.rating = (TextView) convertView.findViewById(R.id.person_rating);
             convertView.setTag(holder);
 
+            holder.person_name.setText(list_comment.get(position).getAuteur());
+            holder.commentaire.setText(list_comment.get(position).getCommentaire());
+            holder.rating.setText(String.valueOf(list_comment.get(position).getRating()));
             return convertView;
         }
 
         class ViewHolder {
+            private TextView person_name;
+            private TextView commentaire;
+            private TextView rating;
         }
     }
 }

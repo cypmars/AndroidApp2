@@ -269,10 +269,10 @@
 
             </RelativeLayout>
 
-            <android.support.v7.widget.ListViewCompat
+            <com.polytech.androidapp.utils.MyListView
                 android:id="@+id/hourslist"
                 android:layout_width="fill_parent"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/relativeHoraire" />
 
             <View
@@ -302,10 +302,10 @@
                     android:textSize="18sp" />
             </RelativeLayout>
 
-            <android.support.v7.widget.ListViewCompat
+            <com.polytech.androidapp.utils.MyListView
                 android:id="@+id/commentlist"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/relativeComments" />
         </LinearLayout>
     </ScrollView>
