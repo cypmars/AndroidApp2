@@ -64,20 +64,7 @@ public class PreferenceActivity extends AppCompatActivity {
         );
 
         maListView = (ListViewCompat) findViewById(R.id.list);
-        maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                this.onItemClick(parent, view, position);
-            }
 
-            private void onItemClick(AdapterView<?> adapter, View v, int position) {
-                String name_categorie = ((TypeCategorie) adapter.getItemAtPosition(position)).getName();
-                Intent intent = new Intent(PreferenceActivity.this, FirstActivity.class);
-                intent.putExtra("name_categorie", name_categorie);
-                //based on item add info to intent
-                startActivity(intent);
-            }
-        });
         TypeCategorie categorie;
         ArrayList<TypeCategorie> listPreference = new ArrayList<>();
         categorie = new TypeCategorie("Culture", R.drawable.culture);
@@ -138,7 +125,7 @@ public class PreferenceActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
 
             final ViewHolder holder = new ViewHolder();
 
@@ -150,6 +137,17 @@ public class PreferenceActivity extends AppCompatActivity {
 
             holder.name.setText(listPreference.get(position).getName());
             holder.image.setImageResource(listPreference.get(position).getImageDrawable());
+            holder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(PreferenceActivity.this, FirstActivity.class);
+                    String name_categorie = listPreference.get(position).getName();
+                    intent.putExtra("name_categorie", name_categorie);
+
+                    //based on item add info to intent
+                    startActivity(intent);
+                }
+            });
 
             return convertView;
         }

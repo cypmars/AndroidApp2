@@ -74,4 +74,6 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_list">ListActivity</string>
+
+    <string name="facebook_app_id">207925573038525</string>
 </resources>

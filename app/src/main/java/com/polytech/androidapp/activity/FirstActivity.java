@@ -147,7 +147,24 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
         longitude = 5.3966877000000295;
 
         // On récupère le json de la requête
-        String url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
+        Intent intent = getIntent();
+        String url_request ="";
+        if(intent != null)
+        {
+            if (intent.getStringExtra("name_categorie") != null)
+            {
+                String name_categorie = intent.getStringExtra("name_categorie");
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&pref="+ name_categorie;
+            }
+            else
+            {
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
+            }
+        }
+        else
+        {
+            url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
+        }
         Log.e("url: ",url_request);
         new JSONTask().execute(url_request);
     }
@@ -364,7 +381,13 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
                                 arrayJour.add(horairesJour);
                             }
                             horairesHebdo.setHoraires_jour(arrayJour);
-                            horairesHebdo.setHorairesHebdo(jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").optString("horairesHebdo"));
+
+                            JSONArray arrayHorairesString = jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").getJSONArray("horairesHebdo");
+                            ArrayList<String> arrayString = new ArrayList<>();
+                            for (int l = 0; l < arrayHorairesString.length(); l++){
+                                arrayString.add(arrayHorairesString.optString(l));
+                            }
+                            horairesHebdo.setHorairesHebdo(arrayString);
                             place.setHoraires_hebdo(horairesHebdo);
                         }
 
@@ -504,33 +527,10 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
                     @Override
                     public void onClick(View v) {
 
-                        String place_id = list_places.get(position).getPlace_id();
-                        String name = list_places.get(position).getName();
-                        String address = list_places.get(position).getAddress();
-                        double latitude = list_places.get(position).getLatitude();
-                        double longitude = list_places.get(position).getLongitude();
-                        ArrayList<String> types= list_places.get(position).getTypes();
-                        int rating = list_places.get(position).getRating();
-                        String phoneNumber= list_places.get(position).getPhoneNumber();
-                        String website= list_places.get(position).getWebsite();
-                        HorairesHebdo horaires_hebdo = list_places.get(position).getHoraires_hebdo();
-                        Photo photoRef =list_places.get(position).getPhotoRef();
-                        ArrayList<Comment> commentArrayList = list_places.get(position).getComment();
-
-
                         Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
-                        intent.putExtra("place_id", place_id);
-                        intent.putExtra("name", name);
-                        intent.putExtra("address", address);
-                        intent.putExtra("latitude", latitude);
-                        intent.putExtra("longitude", longitude);
-                        intent.putExtra("types", types);
-                        intent.putExtra("rating", rating);
-                        intent.putExtra("phoneNumber", phoneNumber);
-                        intent.putExtra("website", website);
-                        intent.putExtra("horaire_hebdo", horaires_hebdo);
-                        intent.putExtra("photoRef", photoRef);
-                        intent.putExtra("comments", commentArrayList);
+                        intent.putExtra("ourlatitude", latitude);
+                        intent.putExtra("ourlongitude", longitude);
+                        intent.putExtra("place", list_places.get(position));
 
                         //based on item add info to intent
                         startActivity(intent);

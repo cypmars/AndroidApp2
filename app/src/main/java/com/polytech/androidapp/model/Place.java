@@ -181,11 +181,13 @@ public class Place implements Parcelable{
         this.longitude = in.readDouble();
         this.address = in.readString();
         this.rating = in.readInt();
-        in.readStringList(types);
+        this.types = new ArrayList<>();
+        in.readList(types, String.class.getClassLoader());
         this.phoneNumber = in.readString();
         this.website = in.readString();
         this.horaires_hebdo = in.readParcelable(getClass().getClassLoader());
         this.photoRef = in.readParcelable(getClass().getClassLoader());
+        this.comment = new ArrayList<>();
         in.readList(comment, Comment.class.getClassLoader());
     }
 
@@ -220,7 +222,7 @@ public class Place implements Parcelable{
         dest.writeDouble(longitude);
         dest.writeString(address);
         dest.writeInt(rating);
-        dest.writeStringList(types);
+        dest.writeList(types);
         dest.writeString(phoneNumber);
         dest.writeString(website);
         dest.writeParcelable(horaires_hebdo, flags);
