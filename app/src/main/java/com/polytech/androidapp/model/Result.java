@@ -13,6 +13,14 @@ public class Result {
         this.description = description;
     }
 
+    public Result(String description) {
+        this.description = description;
+        this.place_id = null;
+    }
+
+    public Result() {
+    }
+
     public String getPlace_id() {
         return place_id;
     }

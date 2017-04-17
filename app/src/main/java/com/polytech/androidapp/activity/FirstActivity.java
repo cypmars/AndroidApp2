@@ -146,8 +146,15 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
-                intent.putExtra("place_id", ((Result) parent.getItemAtPosition(position)).getPlace_id());
-                Log.e("resultId= ", ((Result) parent.getItemAtPosition(position)).getPlace_id());
+                Result result = (Result) parent.getItemAtPosition(position);
+                if (result.getPlace_id() != null)
+                {
+                    intent.putExtra("place_id", ((Result) parent.getItemAtPosition(position)).getPlace_id());
+                }
+                else
+                {
+                    intent.putExtra("place_id", "null");
+                };
                 startActivity(intent);
             }
         });
@@ -217,9 +224,14 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
 
             // Extract the Place descriptions from the results
-            resultList = new ArrayList<Result>(predsJsonArray.length());
+            resultList = new ArrayList<>(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-                Result result = new Result(predsJsonArray.getJSONObject(i).getString("place_id"), predsJsonArray.getJSONObject(i).getString("description")) ;
+                Result result = new Result();
+                if (predsJsonArray.getJSONObject(i).has("place_id"))
+                {
+                    result.setPlace_id(predsJsonArray.getJSONObject(i).getString("place_id"));
+                }
+                result.setDescription(predsJsonArray.getJSONObject(i).getString("description"));
                 resultList.add(result);
 
                 //System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
