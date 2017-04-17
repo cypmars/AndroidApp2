@@ -151,11 +151,13 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 {
                     intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
                     intent.putExtra("place_id", ((Result) parent.getItemAtPosition(position)).getPlace_id());
+                    intent.putExtra("description", ((Result) parent.getItemAtPosition(position)).getDescription());
                 }
                 else
                 {
                     intent = new Intent(FirstActivity.this, FirstActivity.class) ;
                     intent.putExtra("place_id", "null");
+                    intent.putExtra("description", ((Result) parent.getItemAtPosition(position)).getDescription());
                 };
                 startActivity(intent);
             }
@@ -173,6 +175,17 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             {
                 String name_categorie = intent.getStringExtra("name_categorie");
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&pref="+ name_categorie;
+            }
+            else if (intent.getStringExtra("place_id") != null)
+            {
+                String recherche = intent.getStringExtra("description");
+                String[] piece = recherche.split(" ");
+                recherche ="";
+                for (int i = 0 ; i < piece.length; i++)
+                {
+                    recherche = piece[i] +"+"+recherche;
+                }
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist&search="+recherche;
             }
             else
             {
