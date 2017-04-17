@@ -31,9 +31,6 @@ public class Result {
 
     @Override
     public String toString() {
-        return "Result{" +
-                "place_id='" + place_id + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return description ;
     }
 }

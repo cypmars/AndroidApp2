@@ -146,7 +146,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
-
+                intent.putExtra("place_id", ((Result) parent.getItemAtPosition(position)).getPlace_id());
+                Log.e("resultId= ", ((Result) parent.getItemAtPosition(position)).getPlace_id());
+                startActivity(intent);
             }
         });
 
@@ -247,8 +249,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             return resultList.get(index);
         }
 
-        public String getDes(){
-            return resultList.getDescription() ;
+        public String getDescription(int index){
+            return resultList.get(index).getDescription() ;
         }
 
         public Filter getFilter() {
