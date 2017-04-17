@@ -20,8 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -44,28 +48,34 @@ import com.polytech.androidapp.model.Photo;
 import com.polytech.androidapp.model.Place;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 
-public class FirstActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class FirstActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, GoogleApiClient.OnConnectionFailedListener {
 
     GoogleApiClient mGoogleApiClient;
-    int MY_PERMISSIONS_REQUEST_READ_CONTACTS;
 
-    PlaceAdapter.ViewHolder finalHolder;
     ListViewCompat maListView;
     double longitude;
     double latitude;
     private ArrayList<Place> places = new ArrayList<Place>();
+    private AdapterView adapterView;
+    private View view;
+    private int position;
+    private long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +137,12 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         }
         Log.e("latitude", String.valueOf(latitude));
         */
+
+        /*autocomplete search bar initialisation*/
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
+        autoCompleteTextView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_autocomplete));
+        autoCompleteTextView.setOnItemClickListener(this);
+
         latitude = 43.2410117;
         longitude = 5.3966877000000295;
 
@@ -135,6 +151,109 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         Log.e("url: ",url_request);
         new JSONTask().execute(url_request);
     }
+
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        this.adapterView = adapterView;
+        this.view = view;
+        this.position = position;
+        this.id = id;
+        String str = (String) adapterView.getItemAtPosition(position);
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+    }
+
+    public static ArrayList autocomplete(String input) {
+        ArrayList resultList = null;
+
+        HttpURLConnection conn = null;
+        StringBuilder jsonResults = new StringBuilder();
+
+        try {
+            String key = "AIzaSyA8dc_npRU5uwQdlpV1QkOdDYUQtlHGEj8";
+            String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=geocode&language=fr&key=" + key) ;
+            URL url = new URL(str.toString());
+
+            conn = (HttpURLConnection) url.openConnection();
+            InputStreamReader in = new InputStreamReader(conn.getInputStream());
+
+            // Load the results into a StringBuilder
+            int read ;
+            char[] buff = new char[1024];
+            while ((read = in.read(buff)) != -1) {
+                jsonResults.append(buff, 0, read);
+            }
+        } catch (MalformedURLException e) {
+            Log.e("aaa", "Error processing Places API URL", e);
+            return resultList;
+        } catch (IOException e) {
+            Log.e("bbb", "Error connecting to Places API", e);
+            return resultList;
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        try {
+            // Create a JSON object hierarchy from the results
+            JSONObject jsonObj = new JSONObject(jsonResults.toString());
+            JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
+
+            // Extract the Place descriptions from the results
+            resultList = new ArrayList(predsJsonArray.length());
+            for (int i = 0; i < predsJsonArray.length(); i++) {
+                System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
+                System.out.println("============================================================");
+                resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+            }
+        } catch (JSONException e) {
+            Log.e("cccc", "Cannot process JSON results", e);
+        }
+        return resultList;
+
+    }
+
+
+    class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
+        private ArrayList resultList;
+
+        public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
+            super(context, textViewResourceId);
+        }
+
+        public int getCount() {
+            return resultList.size();
+        }
+
+        public String getItem(int index) {
+            return (String) resultList.get(index);
+        }
+
+        public Filter getFilter() {
+            Filter filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults filterResults = new FilterResults();
+                    if (constraint != null) {
+                        resultList = autocomplete(constraint.toString());
+                        filterResults.values = resultList;
+                        filterResults.count = resultList.size();
+                    }
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    if (results != null && results.count > 0) {
+                        notifyDataSetChanged();
+                    } else {
+                        notifyDataSetInvalidated();
+                    }
+                }
+            };
+            return filter;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -164,6 +283,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
 
     private class JSONTask extends AsyncTask<String,Integer, String > {
 

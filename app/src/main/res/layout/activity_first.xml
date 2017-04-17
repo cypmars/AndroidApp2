@@ -43,13 +43,12 @@
             style="@android:style/Widget.DeviceDefault.Light.AutoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="60dp"
             android:backgroundTint="@color/colorNearbyDark"
             android:ems="10"
-            android:text="Please enter your place"
             android:textColor="@color/colorNearbyDark"
-            android:textColorLink="@color/colorNearbyDark"
-            android:layout_marginRight="60dp"
-            android:layout_marginLeft="10dp">
+            android:textColorLink="@color/colorNearbyDark">
 
             <requestFocus />
         </AutoCompleteTextView>
