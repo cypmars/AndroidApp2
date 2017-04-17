@@ -244,8 +244,11 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         public Result getItem(int index) {
+            return resultList.get(index);
+        }
 
-            return resultList.get(index).getDescription();
+        public String getDes(){
+            return resultList.getDescription() ;
         }
 
         public Filter getFilter() {
