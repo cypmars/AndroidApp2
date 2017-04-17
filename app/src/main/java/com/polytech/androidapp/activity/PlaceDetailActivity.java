@@ -58,6 +58,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
                 .build();
         setTitle(null);
 
+
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);
 

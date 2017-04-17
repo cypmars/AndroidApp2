@@ -145,14 +145,16 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
                 Result result = (Result) parent.getItemAtPosition(position);
+                Intent intent;
                 if (result.getPlace_id() != null)
                 {
+                    intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
                     intent.putExtra("place_id", ((Result) parent.getItemAtPosition(position)).getPlace_id());
                 }
                 else
                 {
+                    intent = new Intent(FirstActivity.this, FirstActivity.class) ;
                     intent.putExtra("place_id", "null");
                 };
                 startActivity(intent);
