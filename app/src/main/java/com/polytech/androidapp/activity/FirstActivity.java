@@ -29,7 +29,6 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -61,10 +60,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 
-public class FirstActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class FirstActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     GoogleApiClient mGoogleApiClient;
 
@@ -72,7 +72,7 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
     double longitude;
     double latitude;
     private ArrayList<Place> places = new ArrayList<Place>();
-    private AdapterView adapterView;
+    private AdapterView<android.widget.Adapter> adapterView;
     private View view;
     private int position;
     private long id;
@@ -141,7 +141,13 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
         /*autocomplete search bar initialisation*/
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         autoCompleteTextView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_autocomplete));
-        autoCompleteTextView.setOnItemClickListener(this);
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
+
+            }
+        });
 
         latitude = 43.2410117;
         longitude = 5.3966877000000295;
@@ -169,24 +175,16 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
         new JSONTask().execute(url_request);
     }
 
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        this.adapterView = adapterView;
-        this.view = view;
-        this.position = position;
-        this.id = id;
-        String str = (String) adapterView.getItemAtPosition(position);
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
-    }
-
-    public static ArrayList autocomplete(String input) {
-        ArrayList resultList = null;
+    public static ArrayList<HashMap<String,String>> autocomplete(String input) {
+        ArrayList<HashMap<String,String>> resultList = null;
 
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
 
         try {
             String key = "AIzaSyA8dc_npRU5uwQdlpV1QkOdDYUQtlHGEj8";
-            String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=geocode&language=fr&key=" + key) ;
+            //String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=establishment&language=fr&key=" + key) ;
+            String str = new String("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key="+ key+ "&language=fr&input="+ URLEncoder.encode(input, "utf8")) ;
             URL url = new URL(str.toString());
 
             conn = (HttpURLConnection) url.openConnection();
@@ -216,11 +214,18 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
             JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
 
             // Extract the Place descriptions from the results
-            resultList = new ArrayList(predsJsonArray.length());
+            resultList = new ArrayList<>(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-                System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
-                System.out.println("============================================================");
-                resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+                HashMap<String, String> place = new HashMap<>();
+                String description = predsJsonArray.getJSONObject(i).getString("description");
+                String placeId = predsJsonArray.getJSONObject(i).getString("place_id");
+                place.put("description", description);
+                place.put("place_id", placeId);
+                resultList.add(place);
+
+                //System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
+                //System.out.println("============================================================");
+                //resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
             }
         } catch (JSONException e) {
             Log.e("cccc", "Cannot process JSON results", e);
@@ -231,7 +236,7 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
 
 
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
-        private ArrayList resultList;
+        private ArrayList<HashMap<String, String>> resultList;
 
         public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
             super(context, textViewResourceId);
@@ -241,8 +246,8 @@ public class FirstActivity extends AppCompatActivity implements AdapterView.OnIt
             return resultList.size();
         }
 
-        public String getItem(int index) {
-            return (String) resultList.get(index);
+        public HashMap<String, String> getItem(int index) {
+            return resultList.get(index);
         }
 
         public Filter getFilter() {
