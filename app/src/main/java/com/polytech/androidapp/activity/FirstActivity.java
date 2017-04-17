@@ -183,8 +183,12 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         try {
             String key = "AIzaSyA8dc_npRU5uwQdlpV1QkOdDYUQtlHGEj8";
+<<<<<<< HEAD
             //String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=establishment&language=fr&key=" + key) ;
             String str = new String("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key="+ key+ "&language=fr&input="+ URLEncoder.encode(input, "utf8")) ;
+=======
+            String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=establishment&language=fr&key=" + key) ;
+>>>>>>> origin/master
             URL url = new URL(str.toString());
 
             conn = (HttpURLConnection) url.openConnection();

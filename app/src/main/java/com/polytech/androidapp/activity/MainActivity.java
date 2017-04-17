@@ -45,13 +45,11 @@ public class MainActivity extends FragmentActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                info.setText(
-                        "User ID: "
-                                + loginResult.getAccessToken().getUserId()
-                                + "\n" +
-                                "Auth Token: "
-                                + loginResult.getAccessToken().getToken()
-                );
+                Intent myIntent = new Intent(getBaseContext(),
+                        FirstActivity.class);
+                myIntent.putExtra("token", loginResult.getAccessToken().getToken());
+                myIntent.putExtra("user_id", loginResult.getAccessToken().getUserId());
+                startActivity(myIntent);
             }
 
             @Override
