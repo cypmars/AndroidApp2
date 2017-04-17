@@ -45,6 +45,7 @@ import com.polytech.androidapp.model.HorairesHebdo;
 import com.polytech.androidapp.model.HorairesJour;
 import com.polytech.androidapp.model.Photo;
 import com.polytech.androidapp.model.Place;
+import com.polytech.androidapp.model.Result;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -175,20 +176,16 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         new JSONTask().execute(url_request);
     }
 
-    public static ArrayList<HashMap<String,String>> autocomplete(String input) {
-        ArrayList<HashMap<String,String>> resultList = null;
+    public static ArrayList<Result> autocomplete(String input) {
+        ArrayList<Result> resultList = null;
 
         HttpURLConnection conn = null;
         StringBuilder jsonResults = new StringBuilder();
 
         try {
             String key = "AIzaSyA8dc_npRU5uwQdlpV1QkOdDYUQtlHGEj8";
-<<<<<<< HEAD
             //String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=establishment&language=fr&key=" + key) ;
             String str = new String("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key="+ key+ "&language=fr&input="+ URLEncoder.encode(input, "utf8")) ;
-=======
-            String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=establishment&language=fr&key=" + key) ;
->>>>>>> origin/master
             URL url = new URL(str.toString());
 
             conn = (HttpURLConnection) url.openConnection();
@@ -218,14 +215,10 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             JSONArray predsJsonArray = jsonObj.getJSONArray("predictions");
 
             // Extract the Place descriptions from the results
-            resultList = new ArrayList<>(predsJsonArray.length());
+            resultList = new ArrayList<Result>(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
-                HashMap<String, String> place = new HashMap<>();
-                String description = predsJsonArray.getJSONObject(i).getString("description");
-                String placeId = predsJsonArray.getJSONObject(i).getString("place_id");
-                place.put("description", description);
-                place.put("place_id", placeId);
-                resultList.add(place);
+                Result result = new Result(predsJsonArray.getJSONObject(i).getString("place_id"), predsJsonArray.getJSONObject(i).getString("description")) ;
+                resultList.add(result);
 
                 //System.out.println(predsJsonArray.getJSONObject(i).getString("description"));
                 //System.out.println("============================================================");
@@ -239,8 +232,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    class GooglePlacesAutocompleteAdapter extends ArrayAdapter implements Filterable {
-        private ArrayList<HashMap<String, String>> resultList;
+    class GooglePlacesAutocompleteAdapter extends ArrayAdapter<Result> implements Filterable {
+        private ArrayList<Result> resultList;
 
         public GooglePlacesAutocompleteAdapter(Context context, int textViewResourceId) {
             super(context, textViewResourceId);
@@ -250,8 +243,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             return resultList.size();
         }
 
-        public HashMap<String, String> getItem(int index) {
-            return resultList.get(index);
+        public Result getItem(int index) {
+
+            return resultList.get(index).getDescription();
         }
 
         public Filter getFilter() {
