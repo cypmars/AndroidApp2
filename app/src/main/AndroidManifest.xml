@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.polytech.androidapp">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -20,10 +21,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.FirstActivity" />
-
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAdoD8DBUXy1CqCmz2q4ynbGE3kJdMZDic" />
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
         <activity android:name=".activity.PlaceDetailActivity" />
         <activity android:name=".activity.PreferenceActivity" />
