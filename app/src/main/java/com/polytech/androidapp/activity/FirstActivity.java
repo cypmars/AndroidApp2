@@ -143,11 +143,12 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
 
         /*autocomplete search bar initialisation*/
-        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
+        final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         autoCompleteTextView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_autocomplete));
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                autoCompleteTextView.setText("");
                 Result result = (Result) parent.getItemAtPosition(position);
                 Intent intent;
                 if (result.getPlace_id() != null)
