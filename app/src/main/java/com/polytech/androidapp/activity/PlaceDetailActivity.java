@@ -57,6 +57,7 @@ import java.util.List;
 public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private TypesHorizontalAdapter horizontalAdapter;
+    private double latitude, longitude;
     GoogleApiClient mGoogleApiClient;
 
     ImageView imageTitle;
@@ -117,8 +118,8 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
         commentListView = (ListViewCompat) findViewById(R.id.commentlist);
 
         Intent intent = getIntent();
-        double latitude = intent.getDoubleExtra("ourlatitude", 0.00000);
-        double longitude = intent.getDoubleExtra("ourlongitude", 0.00000);
+        latitude = intent.getDoubleExtra("ourlatitude", 0.00000);
+        longitude = intent.getDoubleExtra("ourlongitude", 0.00000);
         String placeId ="";
 
         if (intent.getStringExtra("place_id")!=null)
@@ -352,6 +353,16 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
 
             holder.person_name.setText(list_comment.get(position).getAuteur());
             holder.commentaire.setText(list_comment.get(position).getCommentaire());
+
+            if (list_comment.get(position).getRating() >= 0 && list_comment.get(position).getRating() <2){
+                holder.rating.setTextColor(Color.RED);
+            }
+            else if (list_comment.get(position).getRating() >= 2 && list_comment.get(position).getRating() <4){
+                holder.rating.setTextColor(Color.YELLOW);
+            }
+            else{
+                holder.rating.setTextColor(Color.GREEN);
+            }
             holder.rating.setText(String.valueOf(list_comment.get(position).getRating()));
             return convertView;
         }
@@ -498,6 +509,14 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             phone.setText(place.getPhoneNumber());
             website.setText(place.getWebsite());
 
+            float res[] = new float[1];
+            Location.distanceBetween(latitude, longitude, place.getLatitude(), place.getLongitude(), res);
+            Log.e("distance: ", String.valueOf(res[0]));
+            float distance = ((int) res[0]) / 1000.0f;
+
+            if (res != null) {
+                dist.setText(String.valueOf(distance) + " km");
+            }
 
             Calendar calendar = Calendar.getInstance();
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
