@@ -138,6 +138,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         }
         Log.e("latitude", String.valueOf(latitude));
         */
+        latitude = 43.2410117;
+        longitude = 5.3966877000000295;
+
 
         /*autocomplete search bar initialisation*/
         AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
@@ -152,6 +155,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
                     intent.putExtra("place_id", ((Result) parent.getItemAtPosition(position)).getPlace_id());
                     intent.putExtra("description", ((Result) parent.getItemAtPosition(position)).getDescription());
+                    intent.putExtra("ourlatitude", latitude);
+                    intent.putExtra("ourlongitude", longitude);
                 }
                 else
                 {
@@ -162,9 +167,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivity(intent);
             }
         });
-
-        latitude = 43.2410117;
-        longitude = 5.3966877000000295;
 
         // On récupère le json de la requête
         Intent intent = getIntent();
@@ -484,46 +486,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            /*maListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    this.onItemClick(parent, view, position);
-                }
-
-                private void onItemClick(AdapterView<?> adapter, View v, int position) {
-
-                    String place_id = ((Place) (adapter.getItemAtPosition(position))).getPlace_id();
-                    String name = ((Place) (adapter.getItemAtPosition(position))).getName();
-                    String address = ((Place) (adapter.getItemAtPosition(position))).getAddress();
-                    double latitude = ((Place) (adapter.getItemAtPosition(position))).getLatitude();
-                    double longitude = ((Place) (adapter.getItemAtPosition(position))).getLongitude();
-                    ArrayList<String> types= ((Place) (adapter.getItemAtPosition(position))).getTypes();
-                    int rating = ((Place) (adapter.getItemAtPosition(position))).getRating();
-                    String phoneNumber= ((Place) (adapter.getItemAtPosition(position))).getPhoneNumber();
-                    String website= ((Place) (adapter.getItemAtPosition(position))).getWebsite();
-                    HorairesHebdo horaires_hebdo = ((Place) (adapter.getItemAtPosition(position))).getHoraires_hebdo();
-                    Photo photoRef =((Place) (adapter.getItemAtPosition(position))).getPhotoRef();
-                    ArrayList<Comment> commentArrayList = ((Place) (adapter.getItemAtPosition(position))).getComment();
-
-                    Log.e("id_place: ", place_id);
-                    Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
-                    intent.putExtra("place_id", place_id);
-                    intent.putExtra("name", name);
-                    intent.putExtra("address", address);
-                    intent.putExtra("latitude", latitude);
-                    intent.putExtra("longitude", longitude);
-                    intent.putExtra("types", types);
-                    intent.putExtra("rating", rating);
-                    intent.putExtra("phoneNumber", phoneNumber);
-                    intent.putExtra("website", website);
-                    intent.putExtra("horaire_hebdo", horaires_hebdo);
-                    intent.putExtra("photoRef", photoRef);
-                    intent.putExtra("comments", commentArrayList);
-
-                    //based on item add info to intent
-                    startActivity(intent);
-                }
-            });*/
             PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row_place, places);
             maListView.setAdapter(adapter);
         }

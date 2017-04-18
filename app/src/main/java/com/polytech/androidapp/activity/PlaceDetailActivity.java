@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,9 +33,24 @@ import com.google.android.gms.location.places.PlacePhotoMetadataResult;
 import com.google.android.gms.location.places.PlacePhotoResult;
 import com.google.android.gms.location.places.Places;
 import com.polytech.androidapp.R;
+import com.polytech.androidapp.model.Aspect;
 import com.polytech.androidapp.model.Comment;
+import com.polytech.androidapp.model.HorairesHebdo;
+import com.polytech.androidapp.model.HorairesJour;
+import com.polytech.androidapp.model.Photo;
 import com.polytech.androidapp.model.Place;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -42,6 +58,20 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
 
     private TypesHorizontalAdapter horizontalAdapter;
     GoogleApiClient mGoogleApiClient;
+
+    ImageView imageTitle;
+    TextView open;
+    RatingBar rate;
+    TextView dist;
+    TextView name;
+    TextView address;
+
+    TextView phone;
+    TextView website;
+
+    RecyclerView typeHorizontalView;
+    ListViewCompat hoursListView;
+    ListViewCompat commentListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,34 +102,89 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
                 }
         );
 
-        final ImageView imageTitle = (ImageView) findViewById(R.id.imageTitle);
-        TextView open = (TextView) findViewById(R.id.open);
-        RatingBar rate = (RatingBar) findViewById(R.id.rate);
-        TextView dist = (TextView) findViewById(R.id.dist);
-        TextView name = (TextView) findViewById(R.id.name);
-        TextView address = (TextView) findViewById(R.id.address);
+        imageTitle = (ImageView) findViewById(R.id.imageTitle);
+        open = (TextView) findViewById(R.id.open);
+        rate = (RatingBar) findViewById(R.id.rate);
+        dist = (TextView) findViewById(R.id.dist);
+        name = (TextView) findViewById(R.id.name);
+        address = (TextView) findViewById(R.id.address);
 
-        TextView phone = (TextView) findViewById(R.id.num);
-        TextView website = (TextView) findViewById(R.id.website);
+        phone = (TextView) findViewById(R.id.num);
+        website = (TextView) findViewById(R.id.website);
 
-        RecyclerView typeHorizontalView = (RecyclerView) findViewById(R.id.horizontal_recycler_view);
-        ListViewCompat hoursListView = (ListViewCompat) findViewById(R.id.hourslist);
-        ListViewCompat commentListView = (ListViewCompat) findViewById(R.id.commentlist);
+        typeHorizontalView = (RecyclerView) findViewById(R.id.horizontal_recycler_view);
+        hoursListView = (ListViewCompat) findViewById(R.id.hourslist);
+        commentListView = (ListViewCompat) findViewById(R.id.commentlist);
 
         Intent intent = getIntent();
         double latitude = intent.getDoubleExtra("ourlatitude", 0.00000);
         double longitude = intent.getDoubleExtra("ourlongitude", 0.00000);
+        String placeId ="";
 
-        Place place = intent.getParcelableExtra("place");
+        if (intent.getStringExtra("place_id")!=null)
+        {
+            String url_request = "https://nearbyappli.herokuapp.com/detail?place_id="+intent.getStringExtra("place_id");
+            placeId = intent.getStringExtra("place_id");
+            new JSONTask().execute(url_request);
+        }
+        else
+        {
+            Place place = intent.getParcelableExtra("place");
+            name.setText(place.getName());
+            address.setText(place.getAddress());
+            rate.setRating(place.getRating());
+            phone.setText(place.getPhoneNumber());
+            website.setText(place.getWebsite());
 
-        name.setText(place.getName());
-        address.setText(place.getAddress());
-        rate.setRating(place.getRating());
-        phone.setText(place.getPhoneNumber());
-        website.setText(place.getWebsite());
+            placeId = place.getPlace_id();
+
+            float res[] = new float[1];
+            Location.distanceBetween(latitude, longitude, place.getLatitude(), place.getLongitude(), res);
+            Log.e("distance: ", String.valueOf(res[0]));
+            float distance = ((int) res[0]) / 1000.0f;
+
+            if (res != null) {
+                dist.setText(String.valueOf(distance) + " km");
+            }
+
+
+            Calendar calendar = Calendar.getInstance();
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY) + 2;
+            Log.e("heure :", String.valueOf(hour));
+            int minute = calendar.get(Calendar.MINUTE);
+            if (place.getHoraires_hebdo() != null) {
+                if (place.isOpen(dayOfWeek, hour, minute) == 1) {
+                    open.setTextColor(Color.GREEN);
+                    open.setText("Ouvert");
+                } else if (place.isOpen(dayOfWeek, hour, minute) == 0)
+                    open.setText("Fermé");
+                else
+                    open.setText("N/D");
+            } else {
+                open.setText("N/D");
+            }
+
+            Log.e("types= ", place.getTypes().toString());
+            horizontalAdapter = new TypesHorizontalAdapter(place.getTypes());
+            LinearLayoutManager horizontalLayoutManager
+                    = new LinearLayoutManager(PlaceDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+            typeHorizontalView.setLayoutManager(horizontalLayoutManager);
+
+            typeHorizontalView.setAdapter(horizontalAdapter);
+
+            if (place.getHoraires_hebdo() != null)
+            {
+                HoursAdapter hoursAdapter = new HoursAdapter(getApplicationContext(), R.layout.row_hours, place.getHoraires_hebdo().getHorairesHebdo());
+                hoursListView.setAdapter(hoursAdapter);
+            }
+
+            CommentsAdapter commentAdapter = new CommentsAdapter(getApplicationContext(), R.layout.row_comments, place.getComment());
+            commentListView.setAdapter(commentAdapter);
+
+        }
 
         // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
-        String placeId=place.getPlace_id();
         final ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback = new ResultCallback<PlacePhotoResult>() {
             @Override
             public void onResult(PlacePhotoResult placePhotoResult) {
@@ -132,51 +217,6 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
                 photoMetadataBuffer.release();
             }
         });
-
-        float res[] = new float[1];
-        Location.distanceBetween(latitude, longitude, place.getLatitude(), place.getLongitude(), res);
-        Log.e("distance: ", String.valueOf(res[0]));
-        float distance = ((int) res[0]) / 1000.0f;
-
-        if (res != null) {
-            dist.setText(String.valueOf(distance) + " km");
-        }
-
-
-        Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int hour = calendar.get(Calendar.HOUR_OF_DAY) + 2;
-        Log.e("heure :", String.valueOf(hour));
-        int minute = calendar.get(Calendar.MINUTE);
-        if (place.getHoraires_hebdo() != null) {
-            if (place.isOpen(dayOfWeek, hour, minute) == 1) {
-                open.setTextColor(Color.GREEN);
-                open.setText("Ouvert");
-            } else if (place.isOpen(dayOfWeek, hour, minute) == 0)
-                open.setText("Fermé");
-            else
-                open.setText("N/D");
-        } else {
-            open.setText("N/D");
-        }
-
-        Log.e("types= ", place.getTypes().toString());
-        horizontalAdapter = new TypesHorizontalAdapter(place.getTypes());
-        LinearLayoutManager horizontalLayoutManager
-                = new LinearLayoutManager(PlaceDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        typeHorizontalView.setLayoutManager(horizontalLayoutManager);
-
-        typeHorizontalView.setAdapter(horizontalAdapter);
-
-        if (place.getHoraires_hebdo() != null)
-        {
-            HoursAdapter hoursAdapter = new HoursAdapter(getApplicationContext(), R.layout.row_hours, place.getHoraires_hebdo().getHorairesHebdo());
-            hoursListView.setAdapter(hoursAdapter);
-        }
-
-        CommentsAdapter commentAdapter = new CommentsAdapter(getApplicationContext(), R.layout.row_comments, place.getComment());
-        commentListView.setAdapter(commentAdapter);
-
     }
 
     @Override
@@ -320,6 +360,178 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             private TextView person_name;
             private TextView commentaire;
             private TextView rating;
+        }
+    }
+
+    private class JSONTask extends AsyncTask<String,Integer, String > {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            String finalJson;
+            try {
+                URL url = new URL(params[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+                InputStream stream = connection.getInputStream();
+                reader = new BufferedReader(new InputStreamReader(stream));
+                StringBuilder buffer = new StringBuilder();
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+
+                finalJson = buffer.toString();
+
+                return finalJson;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(final String result) {
+            Place place = new Place();
+            try {
+
+                // make an jsonObject in order to parse the response
+                JSONObject jsonObject = new JSONObject(result);
+
+                if (jsonObject.has("place_id")) {
+                    place.setPlace_id(jsonObject.optString("place_id"));
+                    place.setName(jsonObject.optString("name"));
+                    place.setAddress(jsonObject.optString("address"));
+                    place.setLatitude(jsonObject.optDouble("latitude"));
+                    place.setLongitude(jsonObject.optDouble("longitude"));
+
+                    ArrayList<String> typesArrayList= new ArrayList<>();
+                    JSONArray arrayTypes = jsonObject.getJSONArray("types");
+                    for (int j = 0; j < arrayTypes.length(); j++){
+                        typesArrayList.add(arrayTypes.optString(j));
+                    }
+                    place.setTypes(typesArrayList);
+
+                    place.setRating(jsonObject.optInt("rating"));
+
+                    if(jsonObject.has("phoneNumber")){
+                        place.setPhoneNumber(jsonObject.optString("phoneNumber"));
+                    }
+                    if (jsonObject.has("website")){
+                        place.setWebsite(jsonObject.optString("website"));
+                    }
+
+                    HorairesHebdo horairesHebdo = new HorairesHebdo();
+                    if (jsonObject.has("horaires_hebdo") && !jsonObject.isNull("horaires_hebdo")){
+                        JSONArray arrayHoraires = jsonObject.getJSONObject("horaires_hebdo").getJSONArray("horaires_jour");
+                        ArrayList<HorairesJour> arrayJour = new ArrayList<>();
+                        for (int k = 0; k < arrayHoraires.length(); k++)
+                        {
+                            HorairesJour horairesJour= new HorairesJour();
+                            horairesJour.setOuverture(arrayHoraires.getJSONObject(k).optString("ouverture"));
+                            horairesJour.setFermeture(arrayHoraires.getJSONObject(k).optString("fermeture"));
+                            arrayJour.add(horairesJour);
+                        }
+                        horairesHebdo.setHoraires_jour(arrayJour);
+
+                        JSONArray arrayHorairesString = jsonObject.getJSONObject("horaires_hebdo").getJSONArray("horairesHebdo");
+                        ArrayList<String> arrayString = new ArrayList<>();
+                        for (int l = 0; l < arrayHorairesString.length(); l++){
+                            arrayString.add(arrayHorairesString.optString(l));
+                        }
+                        horairesHebdo.setHorairesHebdo(arrayString);
+                        place.setHoraires_hebdo(horairesHebdo);
+                    }
+
+                    Photo photo = new Photo();
+                    if (jsonObject.has("photoRef") && !jsonObject.isNull("photoRef"))
+                    {
+                        photo.setHeight(jsonObject.getJSONObject("photoRef").optInt("height"));
+                        photo.setWidth(jsonObject.getJSONObject("photoRef").optInt("width"));
+                        photo.setReference(jsonObject.getJSONObject("photoRef").optString("reference"));
+                        place.setPhotoRef(photo);
+                    }
+
+                    ArrayList<Comment> commentArrayList= new ArrayList<>();
+                    if (jsonObject.has("comment") && !jsonObject.isNull("comment")){
+                        JSONArray arrayComment = jsonObject.getJSONArray("comment");
+                        for (int j = 0; j < arrayComment.length(); j++){
+                            Comment comment = new Comment();
+                            comment.setAuteur(arrayComment.getJSONObject(j).optString("auteur"));
+                            comment.setCommentaire(arrayComment.getJSONObject(j).optString("commentaire"));
+                            comment.setLanguage(arrayComment.getJSONObject(j).optString("language"));
+                            comment.setRating(arrayComment.getJSONObject(j).optInt("rating"));
+                            comment.setTime(arrayComment.getJSONObject(j).optInt("time"));
+
+                            if (arrayComment.getJSONObject(j).has("aspects") && !arrayComment.getJSONObject(j).isNull("aspects"))
+                            {
+                                ArrayList<Aspect> aspectArrayList = new ArrayList<>();
+                                JSONArray arrayAspect = arrayComment.getJSONObject(j).getJSONArray("aspects");
+                                for (int k = 0; k < arrayAspect.length(); k++)
+                                {
+                                    Aspect aspect = new Aspect();
+                                    aspect.setRating(arrayAspect.getJSONObject(k).optInt("rating"));
+                                    aspect.setType(arrayAspect.getJSONObject(k).optString("type"));
+                                    aspectArrayList.add(aspect);
+                                }
+                                comment.setAspects(aspectArrayList);
+                            }
+                            commentArrayList.add(comment);
+                        }
+                    }
+                    place.setComment(commentArrayList);
+                }
+                Log.e("place: ", place.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            name.setText(place.getName());
+            address.setText(place.getAddress());
+            rate.setRating(place.getRating());
+            phone.setText(place.getPhoneNumber());
+            website.setText(place.getWebsite());
+
+
+            Calendar calendar = Calendar.getInstance();
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY) + 2;
+            Log.e("heure :", String.valueOf(hour));
+            int minute = calendar.get(Calendar.MINUTE);
+            if (place.getHoraires_hebdo() != null) {
+                if (place.isOpen(dayOfWeek, hour, minute) == 1) {
+                    open.setTextColor(Color.GREEN);
+                    open.setText("Ouvert");
+                } else if (place.isOpen(dayOfWeek, hour, minute) == 0)
+                    open.setText("Fermé");
+                else
+                    open.setText("N/D");
+            } else {
+                open.setText("N/D");
+            }
+
+            Log.e("types= ", place.getTypes().toString());
+            horizontalAdapter = new TypesHorizontalAdapter(place.getTypes());
+            LinearLayoutManager horizontalLayoutManager
+                    = new LinearLayoutManager(PlaceDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+            typeHorizontalView.setLayoutManager(horizontalLayoutManager);
+
+            typeHorizontalView.setAdapter(horizontalAdapter);
+
+            if (place.getHoraires_hebdo() != null)
+            {
+                HoursAdapter hoursAdapter = new HoursAdapter(getApplicationContext(), R.layout.row_hours, place.getHoraires_hebdo().getHorairesHebdo());
+                hoursListView.setAdapter(hoursAdapter);
+            }
+
+            CommentsAdapter commentAdapter = new CommentsAdapter(getApplicationContext(), R.layout.row_comments, place.getComment());
+            commentListView.setAdapter(commentAdapter);
         }
     }
 }
