@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v7.widget.ListViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ViewGroup;
 
 /**
  * Created by Cyprien on 16/04/2017.
@@ -20,7 +22,7 @@ public class MyListView extends ListViewCompat {
     }
 
     @Override
-    protected void onDraw(Canvas canvas)
+    public void onDraw(Canvas canvas)
     {
         if (getCount() != oldCount)
         {

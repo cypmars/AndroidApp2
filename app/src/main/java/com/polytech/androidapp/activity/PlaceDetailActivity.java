@@ -19,8 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -72,7 +72,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
 
     RecyclerView typeHorizontalView;
     ListViewCompat hoursListView;
-    ListViewCompat commentListView;
+    LinearLayout linearComment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +115,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
 
         typeHorizontalView = (RecyclerView) findViewById(R.id.horizontal_recycler_view);
         hoursListView = (ListViewCompat) findViewById(R.id.hourslist);
-        commentListView = (ListViewCompat) findViewById(R.id.commentlist);
+        linearComment = (LinearLayout) findViewById(R.id.linearComment);
 
         Intent intent = getIntent();
         latitude = intent.getDoubleExtra("ourlatitude", 0.00000);
@@ -181,7 +181,13 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             }
 
             CommentsAdapter commentAdapter = new CommentsAdapter(getApplicationContext(), R.layout.row_comments, place.getComment());
-            commentListView.setAdapter(commentAdapter);
+
+            final int adapterCount = commentAdapter.getCount();
+
+            for (int i = 0; i < adapterCount; i++) {
+                View item = commentAdapter.getView(i, null, null);
+                linearComment.addView(item);
+            }
 
         }
 
@@ -550,7 +556,6 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             }
 
             CommentsAdapter commentAdapter = new CommentsAdapter(getApplicationContext(), R.layout.row_comments, place.getComment());
-            commentListView.setAdapter(commentAdapter);
         }
     }
 }
