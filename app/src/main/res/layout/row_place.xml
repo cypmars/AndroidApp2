@@ -121,24 +121,15 @@
 
                 <Button
                     android:id="@+id/buttonNum"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="110dp"
+                    android:layout_marginRight="110dp"
                     android:layout_weight="1"
                     android:background="@drawable/buttontest"
                     android:text="04 91 58 74 58"
                     android:textColor="@android:color/background_light" />
 
-                <Button
-                    android:id="@+id/buttonWeb"
-                    android:layout_width="135dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="50dp"
-                    android:background="@drawable/buttontest"
-                    android:text="WWW"
-                    android:textColor="@android:color/background_light" />
             </LinearLayout>
         </RelativeLayout>
 
