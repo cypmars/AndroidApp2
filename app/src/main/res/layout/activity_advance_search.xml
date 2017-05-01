@@ -72,7 +72,7 @@
             android:layout_marginRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Rayon de la recherche"/>
+            android:text="Rayon de la recherche *"/>
 
         <Spinner
             android:layout_marginTop="10dp"
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:text="Types de lieu"/>
 
-        <utils.MultiSpinner
+        <com.polytech.androidapp.utils.MultiSpinner
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="true"
-            android:focusableInTouchMode="true"/>
+            android:focusableInTouchMode="true" />
 
         <TextView
             android:layout_width="match_parent"
@@ -116,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="4"
-            android:progress="2"/>
+            android:progress="0"/>
 
         <LinearLayout
             android:layout_marginLeft="10dp"
@@ -176,6 +176,12 @@
             android:layout_height="wrap_content"
             android:text="Open now" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="* Les établissement dont les horaires ne sont renseignées n'apparaîtront pas dans les résultats"/>
         <Button
             android:id="@+id/button3"
             android:layout_width="match_parent"

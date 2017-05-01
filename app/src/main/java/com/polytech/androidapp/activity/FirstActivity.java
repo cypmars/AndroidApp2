@@ -525,7 +525,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 holder.open = (TextView)convertView.findViewById(R.id.open);
                 holder.rate = (RatingBar)convertView.findViewById(R.id.rate);
                 holder.num = (Button)convertView.findViewById(R.id.buttonNum);
-                holder.www = (Button)convertView.findViewById(R.id.buttonWeb);
                 convertView.setTag(holder);
 
                 holder.image.setOnClickListener(new View.OnClickListener() {
