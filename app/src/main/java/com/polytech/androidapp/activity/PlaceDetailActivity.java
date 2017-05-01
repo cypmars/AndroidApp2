@@ -245,7 +245,13 @@ public class PlaceDetailActivity extends AppCompatActivity implements GoogleApiC
             Intent preference = new Intent(PlaceDetailActivity.this, FirstActivity.class);
             startActivity(preference);
         }
-        if (id == R.id.action_carte) {
+        if(id == R.id.advanceSearch){
+            Intent advanceSearch = new Intent(PlaceDetailActivity.this, AdvanceSearchActivity.class);
+            startActivity(advanceSearch);
+        }
+        if(id == R.id.searchByTheme){
+            Intent theme = new Intent(PlaceDetailActivity.this, PreferenceActivity.class);
+            startActivity(theme);
         }
         return super.onOptionsItemSelected(item);
     }
