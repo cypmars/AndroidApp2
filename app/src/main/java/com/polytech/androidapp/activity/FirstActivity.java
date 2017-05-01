@@ -9,7 +9,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
@@ -65,7 +71,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class FirstActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class FirstActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
     GoogleApiClient mGoogleApiClient;
 
@@ -98,16 +104,13 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(topToolBar);
 
-        topToolBar.setNavigationIcon(R.drawable.menu24white);
-        topToolBar.setNavigationOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent preference = new Intent(FirstActivity.this, PreferenceActivity.class);
-                        startActivity(preference);
-                    }
-                }
-        );
+        topToolBar.setNavigationIcon(R.drawable.carte24white);
+        topToolBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         Log.e("ListView: ", "Je suis la ");
         maListView = (ListViewCompat) findViewById(R.id.list);
@@ -263,7 +266,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-
     class GooglePlacesAutocompleteAdapter extends ArrayAdapter<Result> implements Filterable {
         private ArrayList<Result> resultList;
 
@@ -309,7 +311,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -326,10 +327,16 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
         //noinspection SimplifiableIfStatement
         if(id == R.id.action_refresh){
-            Intent preference = new Intent(FirstActivity.this, FirstActivity.class);
-            startActivity(preference);
+            Intent refresh = new Intent(FirstActivity.this, FirstActivity.class);
+            startActivity(refresh);
         }
-        if(id == R.id.action_carte){
+        if(id == R.id.advanceSearch){
+            Intent advanceSearch = new Intent(FirstActivity.this, AdvanceSearchActivity.class);
+            startActivity(advanceSearch);
+        }
+        if(id == R.id.searchByTheme){
+            Intent theme = new Intent(FirstActivity.this, PreferenceActivity.class);
+            startActivity(theme);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -616,7 +623,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             private ImageView image;
             private Button www;
         }
-
     }
+
 
 }

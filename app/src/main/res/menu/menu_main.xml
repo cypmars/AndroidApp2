@@ -8,8 +8,12 @@
         android:icon="@drawable/ic_autorenew_white_24dp"
         app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/action_carte"
-        android:title="carte"
-        android:icon="@drawable/carte24white"
-        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/advanceSearch"
+        android:title="Recherche avancée"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/searchByTheme"
+        android:title="Recherche par theme"
+        app:showAsAction="never" />
 </menu>
