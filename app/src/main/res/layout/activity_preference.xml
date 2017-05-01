@@ -45,7 +45,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorNearbyDark"
             android:ems="10"
-            android:text="Please enter your place"
             android:textColor="@color/colorNearbyDark"
             android:textColorLink="@color/colorNearbyDark"
             android:layout_marginRight="60dp"
