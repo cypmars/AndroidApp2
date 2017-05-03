@@ -163,13 +163,12 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
 
                 String rayonValue = spinner.getSelectedItem().toString();
 
-                final ArrayList<String> arrayTypes = new ArrayList<String>();
+                final ArrayList<String> arrayCheckTypes = new ArrayList<String>();
                 for (int i = 0; i < arrayTypes.size(); i++)
                 {
                     if (spinner2.isCheck(i))
-                        arrayTypes.add(arrayTypes.get(i));
+                        arrayCheckTypes.add(arrayTypes.get(i));
                 }
-
                 int maxPrice = seekBar.getProgress();
                 String rankByValue = spinner3.getSelectedItem().toString();
                 Boolean openNow = checkBox.isChecked();
@@ -180,7 +179,7 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                 }
 
                 if(!arrayTypes.isEmpty()){
-                    launch_search.putExtra("types", arrayTypes);
+                    launch_search.putExtra("types", arrayCheckTypes);
                     tabBool[1]=true;
                 }
 

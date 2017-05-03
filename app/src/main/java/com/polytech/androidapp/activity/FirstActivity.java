@@ -197,13 +197,14 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             else if (intent.getStringExtra("rayon") != null){
                 String rayon = intent.getStringExtra("rayon");
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&rayon=" + (Integer.parseInt(rayon.substring(0, rayon.length()-2))*1000);
-                if (intent.getSerializableExtra("types") != null) {
+                if (intent.getStringArrayListExtra("types") != null) {
                     ArrayList<String> arrayTypes = intent.getStringArrayListExtra("types");
                     String typesString = "";
                     for (int i = 0; i < arrayTypes.size(); i++) {
-                        typesString += arrayTypes.get(i) + "|";
+                        typesString += arrayTypes.get(i) + "=" ;
                     }
                     url_request = url_request + "&types=" + typesString;
+                    Log.e("TYPESTRING ", typesString);
                 }
 
                 if (intent.getIntExtra("maxPrice", 0) != 0) {
