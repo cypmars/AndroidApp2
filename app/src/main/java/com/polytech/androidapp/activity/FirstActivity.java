@@ -177,6 +177,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         String url_request ="";
         if(intent != null)
         {
+            //Recherche par préférence
             if (intent.getStringExtra("name_categorie") != null)
             {
                 String name_categorie = intent.getStringExtra("name_categorie");
@@ -192,6 +193,33 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     recherche = piece[i] +"+"+recherche;
                 }
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist&search="+recherche;
+            }
+            else if (intent.getStringExtra("rayon") != null){
+                String rayon = intent.getStringExtra("rayon");
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&rayon=" + rayon;
+                if (intent.getSerializableExtra("types") != null) {
+                    ArrayList<String> arrayTypes = intent.getStringArrayListExtra("types");
+                    String typesString = "";
+                    for (int i = 0; i < arrayTypes.size(); i++) {
+                        typesString += arrayTypes.get(i) + "|";
+                    }
+                    url_request = url_request + "&types=" + typesString;
+                }
+
+                if (intent.getIntExtra("maxPrice", 0) != 0) {
+                    int maxPrice = intent.getIntExtra("maxPrice", 0);
+                    url_request = url_request + "&maxprice=" + maxPrice ;
+                }
+
+                if (intent.getStringExtra("tri") != null) {
+                    String tri = intent.getStringExtra("tri");
+                    url_request = url_request + "&tri=" + tri;
+                }
+
+                if(intent.getBooleanExtra("openNow", false)){
+                    Boolean open = intent.getBooleanExtra("openNow", false);
+                    url_request = url_request + "&open =" + open;
+                }
             }
             else
             {
@@ -620,7 +648,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             private RatingBar rate;
             private Button num;
             private ImageView image;
-            private Button www;
         }
     }
 

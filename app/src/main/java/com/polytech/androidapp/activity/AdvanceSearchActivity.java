@@ -68,7 +68,7 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
         arrayRayon.add("50km");
         ArrayAdapter<String> adapter_rayon = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayRayon);
         adapter_rayon.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner3.setAdapter(adapter_rayon);
+        spinner.setAdapter(adapter_rayon);
 
         final ArrayList<String> arrayTypes = new ArrayList<>();
         arrayTypes.add("museum");
@@ -126,7 +126,7 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
 
         ArrayList<String> arrayRankby = new ArrayList<>();
         arrayRankby.add("Choisissez un mode de tri");
-        arrayRankby.add("Prominence");
+        arrayRankby.add("Pertinence");
         arrayRankby.add("Distance");
         ArrayAdapter<String> adapter_rankby = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayRankby);
         adapter_rankby.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -163,11 +163,11 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
 
                 String rayonValue = spinner.getSelectedItem().toString();
 
-                final HashMap<String, Integer> hashMapTypes = new HashMap<>();
+                final ArrayList<String> arrayTypes = new ArrayList<String>();
                 for (int i = 0; i < arrayTypes.size(); i++)
                 {
                     if (spinner2.isCheck(i))
-                        hashMapTypes.put(arrayTypes.get(i), 0);
+                        arrayTypes.add(arrayTypes.get(i));
                 }
 
                 int maxPrice = seekBar.getProgress();
@@ -179,8 +179,8 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                     tabBool[0] = true;
                 }
 
-                if(!hashMapTypes.isEmpty()){
-                    launch_search.putExtra("types", hashMapTypes);
+                if(!arrayTypes.isEmpty()){
+                    launch_search.putExtra("types", arrayTypes);
                     tabBool[1]=true;
                 }
 
