@@ -126,7 +126,7 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
 
         ArrayList<String> arrayRankby = new ArrayList<>();
         arrayRankby.add("Choisissez un mode de tri");
-        arrayRankby.add("Pertinence");
+        arrayRankby.add("Importance");
         arrayRankby.add("Distance");
         ArrayAdapter<String> adapter_rankby = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayRankby);
         adapter_rankby.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);

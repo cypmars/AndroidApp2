@@ -105,7 +105,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         setSupportActionBar(topToolBar);
 
         topToolBar.setNavigationIcon(R.drawable.carte24white);
-        topToolBar.setOnClickListener(new View.OnClickListener() {
+        topToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -196,7 +196,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             }
             else if (intent.getStringExtra("rayon") != null){
                 String rayon = intent.getStringExtra("rayon");
-                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&rayon=" + rayon;
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&rayon=" + (Integer.parseInt(rayon.substring(0, rayon.length()-2))*1000);
                 if (intent.getSerializableExtra("types") != null) {
                     ArrayList<String> arrayTypes = intent.getStringArrayListExtra("types");
                     String typesString = "";
@@ -207,7 +207,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 }
 
                 if (intent.getIntExtra("maxPrice", 0) != 0) {
-                    int maxPrice = intent.getIntExtra("maxPrice", 0);
+                    String maxPrice = String.valueOf(intent.getIntExtra("maxPrice", 0));
                     url_request = url_request + "&maxprice=" + maxPrice ;
                 }
 
@@ -217,8 +217,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 }
 
                 if(intent.getBooleanExtra("openNow", false)){
-                    Boolean open = intent.getBooleanExtra("openNow", false);
-                    url_request = url_request + "&open =" + open;
+                    String open = String.valueOf(intent.getBooleanExtra("openNow", false));
+                    url_request = url_request + "&open=" + open;
                 }
             }
             else
