@@ -1,42 +1,24 @@
 package com.polytech.androidapp.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Filter;
-import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.polytech.androidapp.R;
 import com.polytech.androidapp.model.Place;
-import com.polytech.androidapp.model.Result;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -45,8 +27,6 @@ import java.util.ArrayList;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private GoogleMap map;
-    double latitude ;
-    double longitude ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,20 +61,44 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         LatLng myPosition =  new LatLng(latitude,longitude);
 
         map.getUiSettings().setZoomControlsEnabled(true) ;
+        map.getUiSettings().setMapToolbarEnabled(false) ;
 
         ArrayList<Place> places = getIntent().getParcelableArrayListExtra("places") ;
-        for (Place p: places) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.title(p.getName());
-            markerOptions.position(new LatLng(p.getLatitude(), p.getLongitude()));
-            map.addMarker(markerOptions);
+        for (int i =0 ; i < 30 ; i ++ ) {
+
+            Marker marker = map.addMarker(new MarkerOptions()
+                            .position(new LatLng(places.get(i).getLatitude(), places.get(i).getLongitude()))) ;
+            map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+
+                    View v = getLayoutInflater().inflate(R.layout.infos_window, null);
+
+                    ImageView image = (ImageView) v.findViewById(R.id.image) ;
+                    TextView name = (TextView) v.findViewById(R.id.name);
+                    TextView adresse = (TextView) v.findViewById(R.id.adresse);
+                    TextView telephone = (TextView) v.findViewById(R.id.telephone);
+
+                    name.setText("title");
+                    adresse.setText("adresse");
+                    telephone.setText("tel");
+
+                    return v;
+                }
+            });
         }
 
         Marker markerPosition = map.addMarker(new MarkerOptions()
                                         .position(myPosition)
                                         .title("Ma position")
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 13));
     }
-
 }
