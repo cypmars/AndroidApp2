@@ -108,7 +108,11 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         topToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent map = new Intent(FirstActivity.this, MapActivity.class);
+                map.putExtra("places", places) ;
+                map.putExtra("longitude", longitude) ;
+                map.putExtra("latitude", latitude) ;
+                startActivity(map);
             }
         });
 
