@@ -540,6 +540,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         private List<Place> list_places;
         private int resource;
         private LayoutInflater inflater;
+
         public PlaceAdapter(Context context, int resource, List<Place> objects) {
             super(context, resource, objects);
             list_places = objects;
