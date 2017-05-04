@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
     private GoogleMap map;
+    private Place placeT = new Place() ;
+    ArrayList<Place> places = new ArrayList<>() ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +66,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
         map.getUiSettings().setZoomControlsEnabled(true) ;
         map.getUiSettings().setMapToolbarEnabled(false) ;
 
-        ArrayList<Place> places = getIntent().getParcelableArrayListExtra("places") ;
-        for (int i =0 ; i < 30 ; i ++ ) {
-
+        places = getIntent().getParcelableArrayListExtra("places") ;
+        for (Place p : places) {
             Marker marker = map.addMarker(new MarkerOptions()
-                            .position(new LatLng(places.get(i).getLatitude(), places.get(i).getLongitude()))) ;
+                            .position(new LatLng(p.getLatitude(), p.getLongitude()))) ;
+
+            placeT = p ;
             map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-                @Override
+                    @Override
                 public View getInfoWindow(Marker marker) {
                     return null;
                 }
@@ -85,9 +89,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                     TextView adresse = (TextView) v.findViewById(R.id.adresse);
                     TextView telephone = (TextView) v.findViewById(R.id.telephone);
 
-                    name.setText("title");
-                    adresse.setText("adresse");
-                    telephone.setText("tel");
+                    //for(Place p : places){
+                      //  LatLng position = new LatLng(p.getLatitude(), p.getLongitude()) ;
+                        //if(marker.getPosition() == position) {
+                            name.setText(placeT.getName());
+                            adresse.setText(placeT.getAddress());
+                            telephone.setText(placeT.getPhoneNumber());
+                        //}
+                    //}
 
                     return v;
                 }

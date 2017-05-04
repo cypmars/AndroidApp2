@@ -109,7 +109,15 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onClick(View v) {
                 Intent map = new Intent(FirstActivity.this, MapActivity.class);
-                map.putExtra("places", places) ;
+                ArrayList<Place> arrayPlaces = new ArrayList<>() ;
+                if(places.size() > 60){
+                    for(int i = 0 ; i < 40 ; i++){
+                        arrayPlaces.add(places.get(i));
+                    }
+                    map.putExtra("places", arrayPlaces) ;
+                }
+                else
+                    map.putExtra("places", places) ;
                 map.putExtra("longitude", longitude) ;
                 map.putExtra("latitude", latitude) ;
                 startActivity(map);
