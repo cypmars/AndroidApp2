@@ -205,7 +205,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     ArrayList<String> arrayTypes = intent.getStringArrayListExtra("types");
                     String typesString = "";
                     for (int i = 0; i < arrayTypes.size(); i++) {
-                        typesString += arrayTypes.get(i) + "=" ;
+                        typesString += arrayTypes.get(i) + "__" ;
                     }
                     url_request = url_request + "&types=" + typesString;
                     Log.e("TYPESTRING ", typesString);
@@ -214,11 +214,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 if (intent.getIntExtra("maxPrice", 0) != 0) {
                     String maxPrice = String.valueOf(intent.getIntExtra("maxPrice", 0));
                     url_request = url_request + "&maxprice=" + maxPrice ;
-                }
-
-                if (intent.getStringExtra("tri") != null) {
-                    String tri = intent.getStringExtra("tri");
-                    url_request = url_request + "&tri=" + tri;
                 }
 
                 if(intent.getBooleanExtra("openNow", false)){
