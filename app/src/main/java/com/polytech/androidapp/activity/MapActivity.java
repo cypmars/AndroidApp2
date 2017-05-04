@@ -126,6 +126,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback{
                 adresse.setText(mapPlaces.get(marker.getPosition()).getAddress());
                 telephone.setText(mapPlaces.get(marker.getPosition()).getPhoneNumber());
             }
+            else{
+                name.setText("you are here !");
+                adresse.setText("");
+                telephone.setText("");
+            }
         }
 
         public void setModels(HashMap<LatLng, Place> mapPlaces) {
