@@ -219,9 +219,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     Log.e("TYPESTRING ", typesString);
                 }
 
-                if (intent.getIntExtra("maxPrice", 0) != 0) {
-                    String maxPrice = String.valueOf(intent.getIntExtra("maxPrice", 0));
-                    url_request = url_request + "&maxprice=" + maxPrice ;
+                if (intent.getStringExtra("tri") != null) {
+                    String sort = String.valueOf(intent.getStringExtra("tri"));
+                    url_request = url_request + "&sort=" + sort  ;
                 }
 
                 if(intent.getBooleanExtra("openNow", false)){
