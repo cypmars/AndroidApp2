@@ -24,8 +24,6 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
 
     Spinner spinner, spinner3;
     MultiSpinner spinner2;
-    SeekBar seekBar;
-    TextView seekBarValue;
     CheckBox checkBox;
     Button button;
 
@@ -52,6 +50,7 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
         // On récupère les vues dont on a besoin
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner2 = (MultiSpinner) findViewById(R.id.spinner2);
+        spinner3 = (Spinner) findViewById(R.id.spinner3);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         button = (Button) findViewById(R.id.button3);
 
@@ -121,6 +120,14 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
         spinner2.setFocusable(true);
         spinner2.requestFocus();
 
+        final ArrayList<String> arraySort = new ArrayList<>();
+        arraySort.add("Choisissez un mode de tri");
+        arraySort.add("Importance");
+        arraySort.add("Distance");
+        ArrayAdapter<String> adapter_sort = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arraySort);
+        adapter_rayon.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner3.setAdapter(adapter_sort);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,9 +136,11 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                 boolean tabBool[] = new boolean[5];
                 tabBool[0] = false;     //Rayon
                 tabBool[1] = false;     //Types
-                tabBool[2] = false;     //Open
+                tabBool[2] = false;     //Tri
+                tabBool[3] = false;     //Open
 
                 String rayonValue = spinner.getSelectedItem().toString();
+                String sortValue = spinner3.getSelectedItem().toString();
 
                 final ArrayList<String> arrayCheckTypes = new ArrayList<String>();
                 for (int i = 0; i < arrayTypes.size(); i++)
@@ -151,9 +160,14 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                     tabBool[1]=true;
                 }
 
+                if (!sortValue.equals("Choisissez un mode de tri")){
+                    launch_search.putExtra("tri", sortValue);
+                    tabBool[2]=true;
+                }
+
                 if(openNow) {
                     launch_search.putExtra("openNow", openNow);
-                    tabBool[2] = true;
+                    tabBool[3] = true;
                 }
 
                 launch_search.putExtra("tab_bool", tabBool);

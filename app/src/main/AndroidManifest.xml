@@ -17,7 +17,7 @@ package="com.polytech.androidapp">
     <activity android:name="com.facebook.FacebookActivity" android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
         android:label="@string/app_name" />
 
-    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyA956XeSKVsxFbYKNaKkvlhB-KqjDvfQ3g" />
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCCYTG6J5bxKID1v5_3UcrLadKU09Ws-JI" />
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
 
     <activity android:name=".activity.PlaceDetailActivity" />
