@@ -41,8 +41,7 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent back = new Intent(AdvanceSearchActivity.this, FirstActivity.class);
-                        startActivity(back);
+                        finish();
                     }
                 }
         );

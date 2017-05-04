@@ -74,8 +74,7 @@ public class PreferenceActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent back = new Intent(PreferenceActivity.this, FirstActivity.class);
-                        startActivity(back);
+                    finish();
                     }
                 }
         );
