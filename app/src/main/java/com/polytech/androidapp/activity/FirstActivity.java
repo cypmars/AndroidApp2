@@ -216,11 +216,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     url_request = url_request + "&maxprice=" + maxPrice ;
                 }
 
-                if (intent.getStringExtra("tri") != null) {
-                    String tri = intent.getStringExtra("tri");
-                    url_request = url_request + "&tri=" + tri;
-                }
-
                 if(intent.getBooleanExtra("openNow", false)){
                     String open = String.valueOf(intent.getBooleanExtra("openNow", false));
                     url_request = url_request + "&open=" + open;

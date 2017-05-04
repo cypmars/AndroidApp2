@@ -52,11 +52,8 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
         // On récupère les vues dont on a besoin
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner2 = (MultiSpinner) findViewById(R.id.spinner2);
-        spinner3 = (Spinner) findViewById(R.id.spinner3);
-        seekBar = (SeekBar) findViewById(R.id.seekBar);
         checkBox = (CheckBox) findViewById(R.id.checkBox);
         button = (Button) findViewById(R.id.button3);
-        seekBarValue = (TextView) findViewById(R.id.seekBarValue);
 
         ArrayList<String> arrayRayon = new ArrayList<>();
         arrayRayon.add("Choisissez un rayon");
@@ -124,31 +121,6 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
         spinner2.setFocusable(true);
         spinner2.requestFocus();
 
-        ArrayList<String> arrayRankby = new ArrayList<>();
-        arrayRankby.add("Choisissez un mode de tri");
-        arrayRankby.add("Importance");
-        arrayRankby.add("Distance");
-        ArrayAdapter<String> adapter_rankby = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, arrayRankby);
-        adapter_rankby.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner3.setAdapter(adapter_rankby);
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                seekBarValue.setText(String.valueOf(progress));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,9 +129,7 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                 boolean tabBool[] = new boolean[5];
                 tabBool[0] = false;     //Rayon
                 tabBool[1] = false;     //Types
-                tabBool[2] = false;     //Price
-                tabBool[3] = false;     //Rankby
-                tabBool[4] = false;     //OpenNow
+                tabBool[2] = false;     //Open
 
                 String rayonValue = spinner.getSelectedItem().toString();
 
@@ -169,8 +139,6 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                     if (spinner2.isCheck(i))
                         arrayCheckTypes.add(arrayTypes.get(i));
                 }
-                int maxPrice = seekBar.getProgress();
-                String rankByValue = spinner3.getSelectedItem().toString();
                 Boolean openNow = checkBox.isChecked();
 
                 if (!rayonValue.equals("Choisissez un rayon")) {
@@ -183,19 +151,9 @@ public class AdvanceSearchActivity extends AppCompatActivity implements MultiSpi
                     tabBool[1]=true;
                 }
 
-                if (maxPrice != 0 ) {
-                    launch_search.putExtra("maxPrice", maxPrice);
-                    tabBool[2] = true;
-                }
-
-                if (!rankByValue.equals("Choisissez un mode de tri")){
-                    launch_search.putExtra("tri", rankByValue);
-                    tabBool[3] = true;
-                }
-
                 if(openNow) {
                     launch_search.putExtra("openNow", openNow);
-                    tabBool[4] = true;
+                    tabBool[2] = true;
                 }
 
                 launch_search.putExtra("tab_bool", tabBool);
