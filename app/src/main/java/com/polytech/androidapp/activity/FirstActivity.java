@@ -205,7 +205,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     ArrayList<String> arrayTypes = intent.getStringArrayListExtra("types");
                     String typesString = "";
                     for (int i = 0; i < arrayTypes.size(); i++) {
-                        typesString += arrayTypes.get(i) + "=" ;
+                        typesString += arrayTypes.get(i) + "__" ;
                     }
                     url_request = url_request + "&types=" + typesString;
                     Log.e("TYPESTRING ", typesString);
