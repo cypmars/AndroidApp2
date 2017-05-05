@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -71,7 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class FirstActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+public class FirstActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     GoogleApiClient mGoogleApiClient;
 
@@ -109,17 +110,16 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onClick(View v) {
                 Intent map = new Intent(FirstActivity.this, MapActivity.class);
-                ArrayList<Place> arrayPlaces = new ArrayList<>() ;
-                if(places.size() > 60){
-                    for(int i = 0 ; i < 40 ; i++){
+                ArrayList<Place> arrayPlaces = new ArrayList<>();
+                if (places.size() > 60) {
+                    for (int i = 0; i < 40; i++) {
                         arrayPlaces.add(places.get(i));
                     }
-                    map.putExtra("places", arrayPlaces) ;
-                }
-                else
-                    map.putExtra("places", places) ;
-                map.putExtra("longitude", longitude) ;
-                map.putExtra("latitude", latitude) ;
+                    map.putExtra("places", arrayPlaces);
+                } else
+                    map.putExtra("places", places);
+                map.putExtra("longitude", longitude);
+                map.putExtra("latitude", latitude);
                 startActivity(map);
             }
         });
@@ -130,8 +130,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         Log.e("ListView: ", "Je suis la ");
         //Localisation Android
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        String bestProvider ="";
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+        String bestProvider = "";
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
@@ -166,54 +166,46 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 autoCompleteTextView.setText("");
                 Result result = (Result) parent.getItemAtPosition(position);
                 Intent intent;
-                if (result.getPlace_id() != null)
-                {
-                    intent = new Intent(FirstActivity.this, PlaceDetailActivity.class) ;
+                if (result.getPlace_id() != null) {
+                    intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
                     intent.putExtra("place_id", ((Result) parent.getItemAtPosition(position)).getPlace_id());
                     intent.putExtra("description", ((Result) parent.getItemAtPosition(position)).getDescription());
                     intent.putExtra("ourlatitude", latitude);
                     intent.putExtra("ourlongitude", longitude);
-                }
-                else
-                {
-                    intent = new Intent(FirstActivity.this, FirstActivity.class) ;
+                } else {
+                    intent = new Intent(FirstActivity.this, FirstActivity.class);
                     intent.putExtra("place_id", "null");
                     intent.putExtra("description", ((Result) parent.getItemAtPosition(position)).getDescription());
-                };
+                }
+                ;
                 startActivity(intent);
             }
         });
 
         // On récupère le json de la requête
         Intent intent = getIntent();
-        String url_request ="";
-        if(intent != null)
-        {
+        String url_request = "";
+        if (intent != null) {
             //Recherche par préférence
-            if (intent.getStringExtra("name_categorie") != null)
-            {
+            if (intent.getStringExtra("name_categorie") != null) {
                 String name_categorie = intent.getStringExtra("name_categorie");
-                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&pref="+ name_categorie;
-            }
-            else if (intent.getStringExtra("place_id") != null)
-            {
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&pref=" + name_categorie;
+            } else if (intent.getStringExtra("place_id") != null) {
                 String recherche = intent.getStringExtra("description");
                 String[] piece = recherche.split(" ");
-                recherche ="";
-                for (int i = 0 ; i < piece.length; i++)
-                {
-                    recherche = piece[i] +"+"+recherche;
+                recherche = "";
+                for (int i = 0; i < piece.length; i++) {
+                    recherche = piece[i] + "+" + recherche;
                 }
-                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist&search="+recherche;
-            }
-            else if (intent.getStringExtra("rayon") != null){
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist&search=" + recherche;
+            } else if (intent.getStringExtra("rayon") != null) {
                 String rayon = intent.getStringExtra("rayon");
-                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&rayon=" + (Integer.parseInt(rayon.substring(0, rayon.length()-2))*1000);
+                url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&rayon=" + (Integer.parseInt(rayon.substring(0, rayon.length() - 2)) * 1000);
                 if (intent.getStringArrayListExtra("types") != null) {
                     ArrayList<String> arrayTypes = intent.getStringArrayListExtra("types");
                     String typesString = "";
                     for (int i = 0; i < arrayTypes.size(); i++) {
-                        typesString += arrayTypes.get(i) + "__" ;
+                        typesString += arrayTypes.get(i) + "__";
                     }
                     url_request = url_request + "&types=" + typesString;
                     Log.e("TYPESTRING ", typesString);
@@ -221,24 +213,20 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
                 if (intent.getStringExtra("tri") != null) {
                     String sort = String.valueOf(intent.getStringExtra("tri"));
-                    url_request = url_request + "&sort=" + sort  ;
+                    url_request = url_request + "&sort=" + sort;
                 }
 
-                if(intent.getBooleanExtra("openNow", false)){
+                if (intent.getBooleanExtra("openNow", false)) {
                     String open = String.valueOf(intent.getBooleanExtra("openNow", false));
                     url_request = url_request + "&open=" + open;
                 }
-            }
-            else
-            {
+            } else {
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
             }
-        }
-        else
-        {
+        } else {
             url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
         }
-        Log.e("url: ",url_request);
+        Log.e("url: ", url_request);
         new JSONTask().execute(url_request);
     }
 
@@ -251,14 +239,14 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         try {
             String key = "AIzaSyA8dc_npRU5uwQdlpV1QkOdDYUQtlHGEj8";
             //String str = new String("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + URLEncoder.encode(input, "utf8") + "&types=establishment&language=fr&key=" + key) ;
-            String str = new String("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key="+ key+ "&language=fr&input="+ URLEncoder.encode(input, "utf8")) ;
+            String str = new String("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=" + key + "&language=fr&input=" + URLEncoder.encode(input, "utf8"));
             URL url = new URL(str.toString());
 
             conn = (HttpURLConnection) url.openConnection();
             InputStreamReader in = new InputStreamReader(conn.getInputStream());
 
             // Load the results into a StringBuilder
-            int read ;
+            int read;
             char[] buff = new char[1024];
             while ((read = in.read(buff)) != -1) {
                 jsonResults.append(buff, 0, read);
@@ -284,8 +272,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             resultList = new ArrayList<>(predsJsonArray.length());
             for (int i = 0; i < predsJsonArray.length(); i++) {
                 Result result = new Result();
-                if (predsJsonArray.getJSONObject(i).has("place_id"))
-                {
+                if (predsJsonArray.getJSONObject(i).has("place_id")) {
                     result.setPlace_id(predsJsonArray.getJSONObject(i).getString("place_id"));
                 }
                 result.setDescription(predsJsonArray.getJSONObject(i).getString("description"));
@@ -317,8 +304,8 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             return resultList.get(index);
         }
 
-        public String getDescription(int index){
-            return resultList.get(index).getDescription() ;
+        public String getDescription(int index) {
+            return resultList.get(index).getDescription();
         }
 
         public Filter getFilter() {
@@ -362,15 +349,15 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if(id == R.id.action_refresh){
+        if (id == R.id.action_refresh) {
             Intent refresh = new Intent(FirstActivity.this, FirstActivity.class);
             startActivity(refresh);
         }
-        if(id == R.id.advanceSearch){
+        if (id == R.id.advanceSearch) {
             Intent advanceSearch = new Intent(FirstActivity.this, AdvanceSearchActivity.class);
             startActivity(advanceSearch);
         }
-        if(id == R.id.searchByTheme){
+        if (id == R.id.searchByTheme) {
             Intent theme = new Intent(FirstActivity.this, PreferenceActivity.class);
             startActivity(theme);
         }
@@ -383,7 +370,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private class JSONTask extends AsyncTask<String,Integer, String > {
+    private class JSONTask extends AsyncTask<String, Integer, String> {
 
         @Override
         protected void onPreExecute() {
@@ -416,6 +403,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             }
             return null;
         }
+
         @Override
         protected void onPostExecute(final String result) {
 
@@ -434,29 +422,28 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                         place.setLatitude(jsonArray.getJSONObject(i).optDouble("latitude"));
                         place.setLongitude(jsonArray.getJSONObject(i).optDouble("longitude"));
 
-                        ArrayList<String> typesArrayList= new ArrayList<>();
+                        ArrayList<String> typesArrayList = new ArrayList<>();
                         JSONArray arrayTypes = jsonArray.getJSONObject(i).getJSONArray("types");
-                        for (int j = 0; j < arrayTypes.length(); j++){
+                        for (int j = 0; j < arrayTypes.length(); j++) {
                             typesArrayList.add(arrayTypes.optString(j));
                         }
                         place.setTypes(typesArrayList);
 
                         place.setRating(jsonArray.getJSONObject(i).optInt("rating"));
 
-                        if(jsonArray.getJSONObject(i).has("phoneNumber")){
+                        if (jsonArray.getJSONObject(i).has("phoneNumber")) {
                             place.setPhoneNumber(jsonArray.getJSONObject(i).optString("phoneNumber"));
                         }
-                        if (jsonArray.getJSONObject(i).has("website")){
+                        if (jsonArray.getJSONObject(i).has("website")) {
                             place.setWebsite(jsonArray.getJSONObject(i).optString("website"));
                         }
 
                         HorairesHebdo horairesHebdo = new HorairesHebdo();
-                        if (jsonArray.getJSONObject(i).has("horaires_hebdo") && !jsonArray.getJSONObject(i).isNull("horaires_hebdo")){
+                        if (jsonArray.getJSONObject(i).has("horaires_hebdo") && !jsonArray.getJSONObject(i).isNull("horaires_hebdo")) {
                             JSONArray arrayHoraires = jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").getJSONArray("horaires_jour");
                             ArrayList<HorairesJour> arrayJour = new ArrayList<>();
-                            for (int k = 0; k < arrayHoraires.length(); k++)
-                            {
-                                HorairesJour horairesJour= new HorairesJour();
+                            for (int k = 0; k < arrayHoraires.length(); k++) {
+                                HorairesJour horairesJour = new HorairesJour();
                                 horairesJour.setOuverture(arrayHoraires.getJSONObject(k).optString("ouverture"));
                                 horairesJour.setFermeture(arrayHoraires.getJSONObject(k).optString("fermeture"));
                                 arrayJour.add(horairesJour);
@@ -465,7 +452,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
                             JSONArray arrayHorairesString = jsonArray.getJSONObject(i).getJSONObject("horaires_hebdo").getJSONArray("horairesHebdo");
                             ArrayList<String> arrayString = new ArrayList<>();
-                            for (int l = 0; l < arrayHorairesString.length(); l++){
+                            for (int l = 0; l < arrayHorairesString.length(); l++) {
                                 arrayString.add(arrayHorairesString.optString(l));
                             }
                             horairesHebdo.setHorairesHebdo(arrayString);
@@ -473,18 +460,17 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                         }
 
                         Photo photo = new Photo();
-                        if (jsonArray.getJSONObject(i).has("photoRef") && !jsonArray.getJSONObject(i).isNull("photoRef"))
-                        {
+                        if (jsonArray.getJSONObject(i).has("photoRef") && !jsonArray.getJSONObject(i).isNull("photoRef")) {
                             photo.setHeight(jsonArray.getJSONObject(i).getJSONObject("photoRef").optInt("height"));
                             photo.setWidth(jsonArray.getJSONObject(i).getJSONObject("photoRef").optInt("width"));
                             photo.setReference(jsonArray.getJSONObject(i).getJSONObject("photoRef").optString("reference"));
                             place.setPhotoRef(photo);
                         }
 
-                        ArrayList<Comment> commentArrayList= new ArrayList<>();
-                        if (jsonArray.getJSONObject(i).has("comment") && !jsonArray.getJSONObject(i).isNull("comment")){
+                        ArrayList<Comment> commentArrayList = new ArrayList<>();
+                        if (jsonArray.getJSONObject(i).has("comment") && !jsonArray.getJSONObject(i).isNull("comment")) {
                             JSONArray arrayComment = jsonArray.getJSONObject(i).getJSONArray("comment");
-                            for (int j = 0; j < arrayComment.length(); j++){
+                            for (int j = 0; j < arrayComment.length(); j++) {
                                 Comment comment = new Comment();
                                 comment.setAuteur(arrayComment.getJSONObject(j).optString("auteur"));
                                 comment.setCommentaire(arrayComment.getJSONObject(j).optString("commentaire"));
@@ -492,12 +478,10 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                                 comment.setRating(arrayComment.getJSONObject(j).optInt("rating"));
                                 comment.setTime(arrayComment.getJSONObject(j).optInt("time"));
 
-                                if (arrayComment.getJSONObject(j).has("aspects") && !arrayComment.getJSONObject(j).isNull("aspects"))
-                                {
+                                if (arrayComment.getJSONObject(j).has("aspects") && !arrayComment.getJSONObject(j).isNull("aspects")) {
                                     ArrayList<Aspect> aspectArrayList = new ArrayList<>();
                                     JSONArray arrayAspect = arrayComment.getJSONObject(j).getJSONArray("aspects");
-                                    for (int k = 0; k < arrayAspect.length(); k++)
-                                    {
+                                    for (int k = 0; k < arrayAspect.length(); k++) {
                                         Aspect aspect = new Aspect();
                                         aspect.setRating(arrayAspect.getJSONObject(k).optInt("rating"));
                                         aspect.setType(arrayAspect.getJSONObject(k).optString("type"));
@@ -524,7 +508,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     temp.add(place);
                     Log.e("place: ", place.toString());
                 }
-                places =temp;
+                places = temp;
 
 
             } catch (Exception e) {
@@ -554,30 +538,48 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
 
             final ViewHolder holder = new ViewHolder();
 
-                convertView = inflater.inflate(resource, null);
-                holder.name = (TextView)convertView.findViewById(R.id.name);
+            convertView = inflater.inflate(resource, null);
+            holder.name = (TextView) convertView.findViewById(R.id.name);
 
-                holder.image = (ImageView)convertView.findViewById(R.id.imagePlace) ;
-                holder.dist = (TextView)convertView.findViewById(R.id.dist);
-                holder.open = (TextView)convertView.findViewById(R.id.open);
-                holder.rate = (RatingBar)convertView.findViewById(R.id.rate);
-                holder.num = (Button)convertView.findViewById(R.id.buttonNum);
-                convertView.setTag(holder);
+            holder.image = (ImageView) convertView.findViewById(R.id.imagePlace);
+            holder.dist = (TextView) convertView.findViewById(R.id.dist);
+            holder.open = (TextView) convertView.findViewById(R.id.open);
+            holder.rate = (RatingBar) convertView.findViewById(R.id.rate);
+            holder.num = (Button) convertView.findViewById(R.id.buttonNum);
+            convertView.setTag(holder);
 
-                holder.image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            holder.name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                        Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
-                        intent.putExtra("ourlatitude", latitude);
-                        intent.putExtra("ourlongitude", longitude);
-                        intent.putExtra("place", list_places.get(position));
+                    Intent intent = new Intent(FirstActivity.this, PlaceDetailActivity.class);
+                    intent.putExtra("ourlatitude", latitude);
+                    intent.putExtra("ourlongitude", longitude);
+                    intent.putExtra("place", list_places.get(position));
 
-                        //based on item add info to intent
-                        startActivity(intent);
+                    //based on item add info to intent
+                    startActivity(intent);
+                }
+            });
+
+            holder.num.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:" + list_places.get(position).getPhoneNumber()));
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
                     }
-                });
-
+                    startActivity(callIntent);
+                }
+            });
             // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
             String placeId=list_places.get(position).getPlace_id();
             final ResultCallback<PlacePhotoResult> mDisplayPhotoResultCallback = new ResultCallback<PlacePhotoResult>() {
@@ -624,7 +626,15 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             }
             holder.name.setText(list_places.get(position).getName());
             holder.rate.setRating(list_places.get(position).getRating());
-            holder.num.setText(list_places.get(position).getPhoneNumber());
+            if (!list_places.get(position).getPhoneNumber().equals("null"))
+            {
+                holder.num.setText(list_places.get(position).getPhoneNumber());
+            }
+            else
+            {
+                holder.num.setText("non renseigné");
+            }
+
 
             Calendar calendar = Calendar.getInstance();
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);

@@ -84,15 +84,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
 
-        double longitude = getIntent().getDoubleExtra("longitude", 0.0) ;
-        double latitude = getIntent().getDoubleExtra("latitude", 0.0) ;
+        final double longitude = getIntent().getDoubleExtra("longitude", 0.0) ;
+        final double latitude = getIntent().getDoubleExtra("latitude", 0.0) ;
         LatLng myPosition =  new LatLng(latitude,longitude);
 
         map.getUiSettings().setZoomControlsEnabled(true) ;
         map.getUiSettings().setMapToolbarEnabled(false) ;
 
         places = getIntent().getParcelableArrayListExtra("places") ;
-        HashMap<LatLng, Place> mapMarker= new HashMap<>();
+        final HashMap<LatLng, Place> mapMarker= new HashMap<>();
         for (Place p : places) {
             Marker marker = map.addMarker(new MarkerOptions()
                             .position(new LatLng(p.getLatitude(), p.getLongitude()))) ;
@@ -107,6 +107,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition, 13));
         YourCustomInfoWindowAdpater yourInfo=new YourCustomInfoWindowAdpater(getApplicationContext(), mapMarker);
         map.setInfoWindowAdapter(yourInfo);
+        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Intent intent = new Intent(MapActivity.this, PlaceDetailActivity.class);
+                intent.putExtra("place", mapMarker.get(marker.getPosition()));
+                intent.putExtra("ourlatitude", latitude);
+                intent.putExtra("ourlongitude", longitude);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -148,15 +158,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 name.setText(mapPlaces.get(marker.getPosition()).getName());
                 adresse.setText(mapPlaces.get(marker.getPosition()).getAddress());
                 telephone.setText(mapPlaces.get(marker.getPosition()).getPhoneNumber());
-
-                name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(MapActivity.this, PlaceDetailActivity.class);
-                        intent.putExtra("place", mapPlaces.get(marker.getPosition()));
-                        startActivity(intent);
-                    }
-                });
 
                 // Get a PlacePhotoMetadataResult containing metadata for the first 10 photos.
                 String placeId=mapPlaces.get(marker.getPosition()).getPlace_id();
