@@ -10,13 +10,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
@@ -62,13 +56,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -77,6 +71,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
     GoogleApiClient mGoogleApiClient;
 
     ListViewCompat maListView;
+    TextView tvResult;
     double longitude;
     double latitude;
     private ArrayList<Place> places = new ArrayList<Place>();
@@ -100,6 +95,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                 .build();
 
         Log.e("Client Google: ", mGoogleApiClient.toString());
+
         setTitle(null);
 
         Toolbar topToolBar = (Toolbar) findViewById(R.id.toolbar);
@@ -124,11 +120,11 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        Log.e("ListView: ", "Je suis la ");
         maListView = (ListViewCompat) findViewById(R.id.list);
+        tvResult = (TextView) findViewById(R.id.tvresult);
 
-        Log.e("ListView: ", "Je suis la ");
-        //Localisation Android
+        // Localisation Android : Permission + récupération des coordonnées géographique
+        // (Ici on a entré des coordonnées en dur car localisation ne marche pas sur simulateur)
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         String bestProvider = "";
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -157,7 +153,7 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         longitude = 5.3966877000000295;
 
 
-        /*autocomplete search bar initialisation*/
+        // Initialisation de la barre de recherche AutoComplete de Google
         final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         autoCompleteTextView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_autocomplete));
         autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -177,7 +173,6 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     intent.putExtra("place_id", "null");
                     intent.putExtra("description", ((Result) parent.getItemAtPosition(position)).getDescription());
                 }
-                ;
                 startActivity(intent);
             }
         });
@@ -186,26 +181,33 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         Intent intent = getIntent();
         String url_request = "";
         if (intent != null) {
-            //Recherche par préférence
             if (intent.getStringExtra("name_categorie") != null) {
+                //Recherche par préférence
                 String name_categorie = intent.getStringExtra("name_categorie");
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&pref=" + name_categorie;
-            } else if (intent.getStringExtra("place_id") != null) {
+            } else if (intent.getStringExtra("place_id") != null && intent.getStringExtra("place_id").equals("null")) {
+                //Recherche par autocomplete liste de résultat
                 String recherche = intent.getStringExtra("description");
                 String[] piece = recherche.split(" ");
                 recherche = "";
                 for (int i = 0; i < piece.length; i++) {
                     recherche = piece[i] + "+" + recherche;
                 }
+                try {
+                    URLEncoder.encode(recherche, "utf8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist&search=" + recherche;
             } else if (intent.getStringExtra("rayon") != null) {
+                //Recherche avancée
                 String rayon = intent.getStringExtra("rayon");
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&rayon=" + (Integer.parseInt(rayon.substring(0, rayon.length() - 2)) * 1000);
                 if (intent.getStringArrayListExtra("types") != null) {
                     ArrayList<String> arrayTypes = intent.getStringArrayListExtra("types");
                     String typesString = "";
                     for (int i = 0; i < arrayTypes.size(); i++) {
-                        typesString += arrayTypes.get(i) + "__";
+                        typesString += arrayTypes.get(i) + "-";
                     }
                     url_request = url_request + "&types=" + typesString;
                     Log.e("TYPESTRING ", typesString);
@@ -221,9 +223,11 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
                     url_request = url_request + "&open=" + open;
                 }
             } else {
+                //Recherche initiale
                 url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
             }
         } else {
+            //Recherche initiale
             url_request = "https://nearbyappli.herokuapp.com/greeting?latitude=" + latitude + "&longitude=" + longitude + "&sort=dist";
         }
         Log.e("url: ", url_request);
@@ -514,8 +518,16 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row_place, places);
-            maListView.setAdapter(adapter);
+
+            if (places.size() != 0)
+            {
+                PlaceAdapter adapter = new PlaceAdapter(getApplicationContext(), R.layout.row_place, places);
+                maListView.setAdapter(adapter);
+                tvResult.setText(places.size() + " résultats");
+            }
+            else{
+                tvResult.setText("Oups ! Nous n'avons pas trouvé de résultat correspondant à votre recherche !");
+            }
         }
     }
 
