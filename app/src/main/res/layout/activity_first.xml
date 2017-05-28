@@ -16,7 +16,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Toolbar Title"
+            android:text="@string/toolbar_title"
             android:background="@drawable/logo_nearby_2"
             android:layout_gravity="center"
             android:id="@+id/toolbar_title" />
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear"
-        android:text="Chargement..."
+        android:text="@string/chargement"
         android:textSize="25sp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"

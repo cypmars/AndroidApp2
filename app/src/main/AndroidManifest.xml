@@ -38,6 +38,7 @@
         <activity android:name=".activity.PreferenceActivity" />
         <activity android:name=".activity.AdvanceSearchActivity" />
         <activity android:name=".activity.MapActivity" />
+        <activity android:name=".activity.SplashActivity"></activity>
     </application>
 
 </manifest>
