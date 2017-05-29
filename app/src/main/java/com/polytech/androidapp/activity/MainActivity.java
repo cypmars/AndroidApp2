@@ -33,7 +33,7 @@ public class MainActivity extends FragmentActivity {
         enter.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent myIntent = new Intent(getBaseContext(),
-                        SplashActivity.class);
+                       FirstActivity.class);
                 startActivity(myIntent);
             }
         });

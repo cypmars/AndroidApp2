@@ -23,8 +23,8 @@ public class SplashActivity extends AppCompatActivity {
 
         final ImageView imageView = (ImageView) findViewById(R.id.imageView);
 
-        RotateAnimation rotate = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(4000);
+        RotateAnimation rotate = new RotateAnimation(0, 2880, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(18000);
         imageView.startAnimation(rotate);
         startHeavyProcessing();
     }
@@ -37,21 +37,11 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            //some heavy processing resulting in a Data String
-            for (int i = 0; i < 5; i++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Thread.interrupted();
-                }
-            }
             return "whatever result you have";
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Intent i = new Intent(SplashActivity.this, FirstActivity.class);
-            startActivity(i);
             finish();
         }
 

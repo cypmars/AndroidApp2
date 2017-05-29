@@ -85,6 +85,9 @@ public class FirstActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
 
+        Intent splash = new Intent(FirstActivity.this, SplashActivity.class);
+        startActivity(splash);
+
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addOnConnectionFailedListener(this)
