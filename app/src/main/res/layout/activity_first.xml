@@ -54,22 +54,27 @@
         </AutoCompleteTextView>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvresult"
+    <LinearLayout
+        android:id="@+id/linear2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear"
-        android:text="@string/chargement"
-        android:textSize="25sp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        />
+        android:background="@color/cardview_dark_background">
+        <TextView
+            android:id="@+id/tvresult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/chargement"
+            android:textColor="@color/colorNearby"
+            android:textSize="15sp" />
+    </LinearLayout>
 
     <android.support.v7.widget.ListViewCompat
         android:id="@+id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/tvresult" />
+        android:layout_below="@+id/linear2" />
 </RelativeLayout>
